@@ -1,0 +1,192 @@
+package nl.jrdie.taal20._parser;
+//
+import java_cup.runtime.*;
+
+parser code {:
+    public boolean syntaxErrors;
+
+    public void syntax_error(Symbol current_token) {
+        report_error(
+            "Syntax error at line " + (current_token.left+1) + ", column "
+            + current_token.right + " (Token: " + Taal20SymbolType.terminalNames[current_token.sym] + ")\n", null
+        );
+    }
+:};
+
+//parser code  {:
+//  public void report_error(String message, Object info) {
+//    StringBuilder m = new StringBuilder("Error ");
+//
+//    if (info instanceof java_cup.runtime.Symbol)
+//      m.append( "("+info.toString()+")" );
+//
+//    m.append(" : "+message);
+//
+//    System.out.println(m);
+//  }
+//
+//  public void report_fatal_error(String message, Object info) {
+//    report_error(message, info);
+//    throw new RuntimeException("Fatal Syntax Error");
+//  }
+//:};
+
+terminal NEWLINE, SPACE, TAB;
+terminal RBRACE, LBRACE;
+terminal EQEQ, NOTEQ;
+terminal LT, GT;
+terminal EQ;
+
+terminal PLUS, MIN, TIMES, SLASH, PERCENT;
+
+terminal ZOLANG;
+terminal ALS, ANDERS;
+terminal GEBRUIK;
+
+terminal INT;
+
+terminal KLEUROOG;
+terminal ZWOOG;
+terminal KOMPAS;
+terminal VARNAME;
+
+terminal STAP_VOORUIT;
+terminal STAP_ACHTERUIT;
+terminal DRAAI_LINKS;
+terminal DRAAI_RECHTS;
+
+nonterminal AlsAndersStatement;
+nonterminal AlsStatement;
+nonterminal EmptyStatement;
+nonterminal EqualityExpression;
+nonterminal Expressie;
+nonterminal FullStatement;
+nonterminal GebruikStatement;
+nonterminal GebruikStatementType;
+nonterminal InitBlok;
+nonterminal InitStatement;
+nonterminal InitStatementType;
+nonterminal InitStatements;
+nonterminal InitStatementsOpt;
+nonterminal MathExpression;
+nonterminal OpdrachtStatement;
+nonterminal ProgrammaBlok;
+nonterminal Statement;
+nonterminal StatementType;
+nonterminal Statements;
+nonterminal StatementsOpt;
+nonterminal Toekenning;
+nonterminal Vergelijking;
+nonterminal ZolangStatement;
+
+nonterminal space_or_tab;
+nonterminal wit;
+nonterminal wit_recursive;
+nonterminal wit_recursive_opt;
+nonterminal wit_or_newline;
+nonterminal wit_or_newline_recursive;
+nonterminal wit_or_newline_recursive_opt;
+
+nonterminal programma;
+nonterminal goal;
+
+precedence nonassoc NEWLINE, SPACE, TAB;
+precedence left PLUS, MIN, TIMES, SLASH, PERCENT;
+precedence left EQEQ, NOTEQ, LT, GT;
+precedence left LBRACE, RBRACE;
+
+
+start with goal;
+
+space_or_tab ::= SPACE | TAB;
+wit ::= space_or_tab | wit space_or_tab;
+wit_recursive ::= wit | wit_recursive wit;
+wit_recursive_opt ::= wit_recursive | ;
+wit_or_newline ::= wit | NEWLINE;
+wit_or_newline_recursive ::= wit_or_newline | wit_or_newline_recursive wit_or_newline;
+wit_or_newline_recursive_opt ::= wit_or_newline_recursive | ;
+
+goal ::= programma;
+
+programma ::= InitBlok ProgrammaBlok;
+
+InitBlok ::= InitStatementsOpt;
+
+InitStatementsOpt ::= InitStatements | ;
+
+InitStatements ::= InitStatement NEWLINE
+                 | InitStatements InitStatement NEWLINE
+                 ;
+
+//InitStatement ::= wit_or_newline_recursive_opt InitStatementType wit_recursive;
+InitStatement ::= InitStatementType;
+
+InitStatementType ::= GebruikStatement;
+
+GebruikStatementType ::= VARNAME
+                       | ZWOOG
+                       | KLEUROOG
+                       | KOMPAS
+                       ;
+
+GebruikStatement ::= GEBRUIK wit GebruikStatementType wit_recursive_opt;
+
+
+//programmaBlok_opt ::= programmaBlok | ;
+
+ProgrammaBlok ::= StatementsOpt;
+
+StatementsOpt ::= Statements | ;
+
+Statements ::= Statement NEWLINE
+             | Statements Statement NEWLINE
+             ;
+
+Statement ::= EmptyStatement | FullStatement;
+
+EmptyStatement ::= wit_or_newline_recursive_opt;
+
+FullStatement ::= wit_or_newline_recursive_opt StatementType wit_recursive_opt;
+
+StatementType ::= ZolangStatement
+                | Toekenning
+                | AlsStatement
+                | AlsAndersStatement
+                | OpdrachtStatement
+                ;
+
+Toekenning ::= VARNAME wit EQ wit Expressie;
+
+
+Expressie ::= INT
+            | VARNAME
+            | MathExpression
+            | KLEUROOG
+            | ZWOOG
+            | KOMPAS
+            ;
+
+//ExpressieCalc ::= Expressie wit ExpressieCalcOperation wit Expressie;
+
+//ExpressieCalcOperation ::= PLUS | MIN | TIMES | SLASH | PERCENT;
+
+ZolangStatement ::= ZOLANG wit Vergelijking wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok wit_recursive_opt RBRACE;
+
+Vergelijking ::= EqualityExpression;
+
+MathExpression ::= Expressie wit PLUS wit Expressie
+                 | Expressie wit MIN wit Expressie
+                 | Expressie wit TIMES wit Expressie
+                 | Expressie wit SLASH wit Expressie
+                 | Expressie wit PERCENT wit Expressie;
+
+EqualityExpression ::= Expressie wit LT wit Expressie
+                     | Expressie wit GT wit Expressie
+                     | Expressie wit EQEQ wit Expressie
+                     | Expressie wit NOTEQ wit Expressie;
+
+AlsStatement ::= ALS wit Vergelijking wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok wit_recursive_opt RBRACE;
+
+AlsAndersStatement ::= ALS wit Vergelijking wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok wit_recursive_opt RBRACE wit ANDERS wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok wit_recursive_opt RBRACE;
+
+OpdrachtStatement ::= STAP_VOORUIT | STAP_ACHTERUIT | DRAAI_LINKS | DRAAI_RECHTS;
