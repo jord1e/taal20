@@ -1,0 +1,845 @@
+<!doctype html>
+<html lang="nl-nl">
+<head>
+    <link rel="icon" type="image/png" href="https://amazing.hbo-ict.org/images/favicon.png">
+    <meta charset="utf-8">
+    <title>Challenge week: Software Engineering</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link media="all" type="text/css" rel="stylesheet" href="https://amazing.hbo-ict.org/scripts/bootstrap.min.css">
+    <link media="all" type="text/css" rel="stylesheet" href="https://amazing.hbo-ict.org/scripts/dataTables.bootstrap.css">
+    <link media="all" type="text/css" rel="stylesheet" href="https://amazing.hbo-ict.org/css/main.css">
+    <link media="all" type="text/css" rel="stylesheet" href="https://amazing.hbo-ict.org/scripts/bootstrap-toggle.min.css">
+    <script src="https://www.google.com/jsapi"></script>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header"> <a class="navbar-brand" href="https://amazing.hbo-ict.org"><img src="https://amazing.hbo-ict.org/images/hsl-logo.png" class="img-header-logo"></a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="https://amazing.hbo-ict.org/assignments">Mijn opdrachten</a></li>
+                <li><a href="https://amazing.hbo-ict.org/ranking">Highscores</a></li>
+                <li><a href="https://amazing.hbo-ict.org/logout">Uitloggen</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <ol class="breadcrumb">
+        <li class="active"> zandbak_09 </li>
+        <li class="active">Mijn opdrachten</li>
+        <li class="active">Opdracht</li>
+    </ol>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Menu</h3>
+                </div>
+                <div class="panel-body">
+                    <p>Opdracht maken </p>
+                    <div class="list-group"> <a href="https://amazing.hbo-ict.org/assignments" class="list-group-item">Openstaande opdrachten</a> <a href="https://amazing.hbo-ict.org/assignments/done" class="list-group-item">Gemaakte opdrachten</a>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Goto</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="list-group"> <a href="#Kostenkaart" class="list-group-item">Kostenkaart</a> <a href="#Glade" class="list-group-item">Glade</a> <a href="#Programma" class="list-group-item">Programma</a> <a href="#Feedback" class="list-group-item">Feedback</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="page-header">
+                <h1>zandbak_01 <small></small></h1>
+            </div> Deze opdracht kunnen jullie inleveren. Bekijk hier onder elkaar:
+            <ul>
+                <li>De kostenkaart.</li>
+                <li>De glade.</li>
+                <li>En schrijf het programma.</li>
+            </ul> <a name="Kostenkaart"></a>
+            <h3>Kostenkaart</h3> <strong>Let op: </strong>Een gemarkeerde cel betekend dat die waarde is aangepast door de makers, en dus afwijkt van de standaard kostenkaart!
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Hardware (aanschaf)</th>
+                    <th>&nbsp;</th>
+                    <th>Verbruik</th>
+                    <th>&nbsp;</th>
+                    <th>Software (per geschreven statement)</th>
+                    <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>kompas</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="compassHardware" value="100" min="1" size="5" required></td>
+                    <td>stapVooruit</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="stepForwardUse" value="1" min="1" size="5" required></td>
+                    <td>zolang (lus)</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="whileLoopSoftware" value="50" min="1" size="5" required></td>
+                </tr>
+                <tr>
+                    <td>zwOog (alles is wit behalve zwart)</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="bwEyeHardware" value="50" min="1" size="5" required></td>
+                    <td>stapAchteruit</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="stepBackwardsUse" value="1" min="1" size="5" required></td>
+                    <td>als (keuze)</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="ifChoiceSoftware" value="40" min="1" size="5" required></td>
+                </tr>
+                <tr>
+                    <td>kleurOog</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="colorEyeHardware" value="200" min="1" size="5" required></td>
+                    <td>draaiLinks</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="turnLeftUse" value="5" min="1" size="5" required></td>
+                    <td>opdracht</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="assignmentSoftware" value="20" min="1" size="5" required></td>
+                </tr>
+                <tr>
+                    <td>variabele (a .. z)</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="variableAzHardware" value="30" min="1" size="5" required></td>
+                    <td>draaiRechts</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="turnRightUse" value="5" min="1" size="5" required></td>
+                    <td>toekenning</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="assignSoftware" value="10" min="1" size="5" required></td>
+                </tr>
+                <tr>
+                    <th>&nbsp;</th>
+                    <td>&nbsp;</td>
+                    <td>zwOog</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="bwEyeUse" value="10" min="1" size="5" required></td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>kleurOog</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="colorEyeUse" value="20" min="1" size="5" required></td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <th>&nbsp;</th>
+                    <td>&nbsp;</td>
+                    <td>kompas</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="compassUse" value="15" min="1" size="5" required></td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>duw obstakel (schade)</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="pushObstacleUse" value="100" min="1" size="5" required></td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <th>&nbsp;</th>
+                    <td>&nbsp;</td>
+                    <td>toewijzing (a = 1) (<i>het uitvoeren van een toekenning</i>)</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="assignUse" value="2" min="1" size="5" required></td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>operatie (+, 0, *, %, /)</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="operationUse" value="2" min="1" size="5" required></td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <th>&nbsp;</th>
+                    <td>&nbsp;</td>
+                    <td>vergelijking (==, &lt;, &gt;, !=)</td>
+                    <td><input readonly class="form-control input-sm" type="number" name="equalUse" value="2" min="1" size="5" required></td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <th>Start kapitaal</th>
+                    <td><input readonly class="form-control input-sm" type="number" name="startCredits" value="2020" min="1" size="5" required></td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                </tbody>
+            </table> <a name="Glade"></a>
+            <h3>Glade</h3>
+            <div class="field-container">
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+                <div class="field-row">
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                    <div class="field-block"></div>
+                </div>
+            </div>
+            <br>
+            <br>
+            <form method="POST" action="https://amazing.hbo-ict.org/assignments/create-program" accept-charset="UTF-8">
+                <input name="_token" type="hidden" value="ZX71e8ZPUWRZtPOdomQ2T62fppZRqKOAmIoLyIOF"> <a name="Programma"></a>
+                <h3>Programma</h3>
+                <div class="form-group">
+                    <textarea id="programCodeArea" class="form-control program-editor" rows="25" name="programCode" cols="50"></textarea>
+                </div>
+                <input name="user_id" type="hidden" value="11">
+                <input name="maze_id" type="hidden" value="1">
+                <div class="form-group">
+                    <input type="submit" name="formaction" value="Opslaan" class="btn btn-danger"> Aantal pogingen over: 20
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://amazing.hbo-ict.org/scripts/bootstrap.min.js"></script>
+<script src="https://amazing.hbo-ict.org/scripts/jquery.min.js"></script>
+<script src="https://amazing.hbo-ict.org/scripts/jquery.tablesorter.min.js"></script>
+<script>
+    //makes textarea tabbable
+    $(document).delegate('#programCodeArea', 'keydown', function(e) {
+        var keyCode = e.keyCode || e.which;
+
+        if (keyCode == 9) {
+            e.preventDefault();
+            var start = $(this).get(0).selectionStart;
+            var end = $(this).get(0).selectionEnd;
+
+            // set textarea value to: text before caret + tab + text after caret
+            $(this).val($(this).val().substring(0, start)
+                + "\t"
+                + $(this).val().substring(end));
+
+            // put caret at right position again
+            $(this).get(0).selectionStart =
+                $(this).get(0).selectionEnd = start + 1;
+        }
+    });
+
+    //the first 18 are menu items, so new drops have to increase its id nr with 19
+    var dragNr = 19;
+
+    loadMaze("O2;O2;O2;O2;O2;O2;O2;O2;O2;C5;C5;O2;O2;O2;O2;O2;O2;O2;O2;O2;O2;O2;C5;C5;C5;C5;C5;C5;C5;C5;C5;C5;C5;O1;O1;O1;O1;O1;O1;O2;O2;C5;C5;O1;C2;C4;C4;O1;O2;C3;C3;C3;C5;C5;C5;C5;C5;O1;O1;O2;O2;C5;O1;C2;C2;C2;C4;O2;O1;C3;C3;C3;C3;C5;O1;O1;C5;C5;O1;O2;O2;C5;C2;C2;C2;C2;C4;O2;C3;C3;C3;C3;C3;C5;C5;O1;O1;C5;O1;O2;O2;C5;O3;C2;C2;C4;C4;C3;C3;C3;C3;C3;C3;C3;C5;O1;O1;C5;O1;O2;O2;C5;O3;C2;C2;C3;C3;C3;C3;C3;C3;C3;C3;C3;C5;C5;O1;C5;O1;O2;O2;C5;O3;C2;C5;S1;C3;C3;C3;C3;C3;C3;C3;C3;C3;D1;C5;C5;C5;O2;O2;C5;C5;C5;C5;C3;C3;C3;C3;C3;C3;C3;C3;C3;C3;C3;C3;C3;C5;O2;C5;C5;C5;C3;C3;C3;C3;C3;C4;C3;C3;C3;C3;C3;C3;C3;C3;C5;C5;C5;C5;C5;C3;C3;C4;C4;C4;C4;C4;C3;C3;C3;C3;C3;C3;O1;C3;C4;C4;C5;O2;C5;C3;C3;C4;C4;C4;C2;C3;C3;C3;C3;C3;C3;C3;O1;C3;C5;C4;O2;O2;C5;C3;C3;C4;C4;C4;C2;C3;O1;C3;C3;C3;C3;C3;C3;C3;C5;C4;O2;O2;C5;C3;C3;C4;C4;C3;C3;C3;C3;C3;C3;C3;O1;C3;C3;C3;C5;C4;O2;O2;C5;C3;R1;R1;R1;C3;C3;C3;C3;C3;C3;C3;C3;C3;C3;C3;C5;C5;O2;O2;C5;C5;R1;R1;R1;C3;C3;C3;C3;C3;C3;C3;C3;C3;C3;C3;O1;C5;O2;O2;O1;C5;R1;R1;R1;C3;C3;C3;C3;C3;C3;C3;C3;C3;C3;O1;O1;C5;O2;O2;O1;C5;C5;C5;E8;C5;C5;C5;C5;C5;C5;C5;C5;C5;C3;O1;C5;C5;O2;O2;O1;O1;O1;C5;C5;C5;C3;C3;C5;C5;C3;C3;C3;C5;C5;C5;C5;R1;O2;O2;O2;O2;O2;O2;O2;O2;O2;O2;C5;C5;O2;O2;O2;O2;O2;O2;O2;O2;O2");
+
+    function loadMaze(maze)
+    {
+        //loadMaze can be called with an empty string (see 4 lines above), if so ignore it
+        if(maze.length != 0)
+        {
+            //see in what div we are, this var will only be incremented when a new field-block div is found
+            var counter = 0;
+            var mazeArray = maze.split(";");
+
+            //get all the field-block divs and append
+            var divs = document.getElementsByTagName("div");
+            for(var i = 0; i < divs.length; i++){
+                if(divs[i].getAttribute("class") == "field-block")
+                {
+                    //grab the appropriate maze code from array
+                    var mazeCode = mazeArray[counter];
+                    //the result will get appended in the div at the end
+                    var result = "";
+
+                    //read the code and select appropriate image
+                    switch(mazeCode.substring(0, 1))
+                    {
+                        case "B":
+                            result = createBomb(mazeCode.substring(1, 2), dragNr);
+                            break;
+                        case "D":
+                            result = createGoal(mazeCode.substring(1, 2), dragNr);
+                            break;
+                        case "E":
+                            result = createBonus(mazeCode.substring(1, 2), dragNr);
+                            break;
+                        case "O":
+                            result = createObstacle(mazeCode.substring(1, 2), dragNr);
+                            break;
+                        case "R":
+                            result = createTurn(mazeCode.substring(1, 2), dragNr);
+                            break;
+                        case "S":
+                            result = createStart(mazeCode.substring(1, 2), dragNr);
+                            break;
+                        case "C":
+                            result = createColor(mazeCode.substring(1, 2), dragNr);
+                            break;
+                    }
+
+                    //set the result to the div's innerHTML
+                    divs[i].innerHTML = result;
+
+                    //up the counter and dragNr
+                    counter++;
+                    dragNr++;
+                }
+            }
+        }
+    }
+
+    function createColor(level, id)
+    {
+        var pic = "white.png";
+
+        switch(level)
+        {
+            case "8":
+                pic = "white.png";
+                break;
+            case "7":
+                pic = "gray.jpg";
+                break;
+            case "6":
+                pic = "red.jpg";
+                break;
+            case "5":
+                pic = "orange.jpg";
+                break;
+            case "4":
+                pic = "yellow.jpg";
+                break;
+            case "3":
+                pic = "green.jpg";
+                break;
+            case "2":
+                pic = "blue.gif";
+                break;
+            case "1":
+                pic = "purple.jpg";
+                break;
+            case "0":
+                pic = "black.png";
+                break;
+        }
+
+        var type = "color";
+        var width = 31;
+        var height = 31;
+        return createImage(level, id, pic, type, width, height);
+    }
+
+    function createStart(level, id)
+    {
+        var pic = "start.png";
+        var type = "start";
+        var width = 32;
+        var height = 32;
+        return createImage(level, id, pic, type, width, height);
+    }
+
+    function createTurn(level, id)
+    {
+        var pic = "turn.png";
+        var type = "turn";
+        var width = 32;
+        var height = 32;
+        return createImage(level, id, pic, type, width, height);
+    }
+
+    function createObstacle(level, id)
+    {
+        var pic = "wood.png";
+        var type = "wood";
+
+        switch(level)
+        {
+            case "0":
+                pic = "debris.gif";
+                type = "debris";
+                break;
+            case "1":
+                pic = "bush.gif";
+                type = "bush";
+                break;
+            case "2":
+                pic = "stone.gif";
+                type = "stone";
+                break;
+            case "3":
+                pic = "wood.png";
+                type = "wood";
+                break;
+        }
+
+        var width = 31;
+        var height = 31;
+        return createImage(level, id, pic, type, width, height);
+    }
+
+    function createBonus(level, id)
+    {
+        var pic = "bonus.gif";
+        var type = "bonus";
+        var width = 32;
+        var height = 32;
+        return createImage(level, id, pic, type, width, height);
+    }
+
+    function createGoal(level, id)
+    {
+        var pic = "goal.png";
+        var type = "goal";
+        var width = 32;
+        var height = 32;
+        return createImage(level, id, pic, type, width, height);
+    }
+
+    function createBomb(level, id)
+    {
+        var pic = "bomb.png";
+        var type = "bomb";
+        var width = 32;
+        var height = 32;
+        return createImage(level, id, pic, type, width, height);
+    }
+
+    function createImage(level, id, pic, type, width, height)
+    {
+        return "<img id=drag" + id + " src='https://amazing.hbo-ict.org/images/" + pic + "' type='" + type + "' value='" + level + "' draggable='true' ondragstart='drag(event)' width='" + width + "' height='" + height + "'><p>" + level + "</p>";
+    }
+</script>
+</body>
+</html>

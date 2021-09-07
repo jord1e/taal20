@@ -69,7 +69,7 @@ draaiRechts
 stapVooruit
 stapVooruit
 draaiRechts
-zolang kompas % 2 == 1     {
+zolang kompas % 2 == 1 {
 
 draaiLinks
 }
