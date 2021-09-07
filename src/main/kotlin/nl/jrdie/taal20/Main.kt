@@ -4,6 +4,8 @@ package nl.jrdie.taal20
 import java_cup.runtime.Symbol
 import nl.jrdie.taal20._parser.Taal20Parser
 import nl.jrdie.taal20._parser.Taal20SymbolType
+import nl.jrdie.taal20.ast.Programma
+import nl.jrdie.taal20.ast.printer.Taal20AstPrinter
 import nl.jrdie.taal20.lexer.Taal20Lexer
 import java.io.StringReader
 
@@ -74,7 +76,7 @@ stapVooruit
 //draaiLinks
 //}
 //""".trimStart()
-    val test = """
+    val test6 = """
 gebruik a
 gebruik zwOog
 gebruik kleurOog
@@ -85,7 +87,11 @@ stapVooruit
 zolang zwOog == 1 {
     stapVooruit
 }
-
+als kleurOog == 5 {
+   draaiRechts
+} anders {
+ draaiLinks
+}
 draaiLinks
 
 a = 0
@@ -93,6 +99,23 @@ a = 0
 zolang a < 4 {
     a = a + 1
     stapVooruit
+}
+""".trimStart()
+
+    val test = """
+gebruik kleurOog
+zolang 1 == 1 {
+stapVooruit
+stapVooruit
+stapVooruit
+stapVooruit
+als kleurOog == 5 {
+draaiRechts
+}
+als kleurOog == 1 {
+draaiLinks
+stapVooruit
+}
 }
 """.trimStart()
 
@@ -110,11 +133,15 @@ zolang a < 4 {
     try {
         val parser = Taal20Parser(lexer2)
         val result = parser.parse()
-        val parseValue = result.value
+        val parseValue = result.value as Programma
         println(parseValue)
         println(parseValue.javaClass.name)
 //        parser.debug_parse()
-        println("===\nGeen syntax error\n===")
+        println("===\n> Geen syntax errors gevonden :D\n")
+        val printer = Taal20AstPrinter()
+        val ast = printer.printProgramma(parseValue)
+        println("=== Abstract Syntax Tree (reconstructed)")
+        println(ast)
     } catch (e: Exception) {
         e.printStackTrace()
     }

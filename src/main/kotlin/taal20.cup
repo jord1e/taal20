@@ -3,6 +3,7 @@ package nl.jrdie.taal20._parser;
 import java_cup.runtime.*;
 import nl.jrdie.taal20.ast.*;
 import java.util.ArrayList;
+import java.util.List;
 
 parser code {:
     public boolean syntaxErrors;
@@ -58,29 +59,30 @@ terminal STAP_ACHTERUIT;
 terminal DRAAI_LINKS;
 terminal DRAAI_RECHTS;
 
-nonterminal AlsAndersStatement AlsAndersStatement;
-nonterminal AlsStatement AlsStatement;
+nonterminal IAlsStatement AlsStatement;
+//nonterminal AlsAndersStatement AlsAndersStatement;
+//nonterminal AlsStatement AlsStatement;
 nonterminal EmptyStatement;
-nonterminal EqualityExpression;
-nonterminal Expressie;
-nonterminal FullStatement;
-nonterminal GebruikStatement;
-nonterminal GebruikStatementType;
+nonterminal EqualityExpression EqualityExpression;
+nonterminal Expressie Expressie;
+nonterminal ProgrammaStatement FullStatement;
+nonterminal GebruikStatement GebruikStatement;
+nonterminal InitConstantType GebruikStatementType;
 nonterminal InitBlok InitBlok;
-nonterminal InitStatement;
-nonterminal InitStatementType;
-nonterminal InitStatements;
-nonterminal InitStatementsOpt;
-nonterminal MathExpression;
+nonterminal InitStatement InitStatement;
+nonterminal InitStatement InitStatementType;
+nonterminal ArrayList<InitStatement> InitStatements;
+nonterminal ArrayList<InitStatement> InitStatementsOpt;
+nonterminal CalcExpressie MathExpression;
 nonterminal OpdrachtStatement OpdrachtStatement;
 nonterminal ProgrammaBlok ProgrammaBlok;
 nonterminal ProgrammaStatement Statement;
-nonterminal StatementType;
-nonterminal Statements;
-nonterminal StatementsOpt;
-nonterminal Toekenning;
-nonterminal Vergelijking Vergelijking;
-nonterminal ZolangStatement;
+nonterminal ProgrammaStatement StatementType;
+nonterminal List<ProgrammaStatement> Statements;
+nonterminal List<ProgrammaStatement> StatementsOpt;
+nonterminal ToekenningStatement ToekenningStatement;
+nonterminal EqualityExpression Vergelijking;
+nonterminal ZolangStatement ZolangStatement;
 
 nonterminal space_or_tab;
 nonterminal wit;
@@ -95,8 +97,9 @@ nonterminal Programma goal;
 
 precedence nonassoc NEWLINE, SPACE, TAB;
 precedence left PLUS, MIN, TIMES, SLASH, PERCENT;
-precedence left EQEQ, NOTEQ, LT, GT;
+precedence nonassoc EQEQ, NOTEQ, LT, GT;
 precedence left LBRACE, RBRACE;
+precedence nonassoc ANDERS;
 
 
 start with goal;
@@ -111,86 +114,88 @@ wit_or_newline_recursive_opt ::= wit_or_newline_recursive | ;
 
 goal ::= programma:p {: RESULT = p; :};
 
-programma ::= InitBlok:ib ProgrammaBlok {: System.out.println("Parse successful."); RESULT = new Programma(ib); :};
+programma ::= InitBlok:ib ProgrammaBlok:pb {: System.out.println("Parse successful."); RESULT = new Programma(ib, pb); :};
 
-InitBlok ::= InitStatementsOpt:s {: RESULT = new InitBlok(new ArrayList<>()); :};
+InitBlok ::= InitStatementsOpt:s {: RESULT = new InitBlok(s); :};
 
-InitStatementsOpt ::= InitStatements | ;
+InitStatementsOpt ::= InitStatements:sl {: RESULT = sl; :}
+                    | {: RESULT = new ArrayList<InitStatement>(); :}
+                    ;
 
-InitStatements ::= InitStatement NEWLINE
-                 | InitStatements InitStatement NEWLINE
+InitStatements ::= InitStatement:s NEWLINE {: RESULT = new ArrayList<InitStatement>(); RESULT.add(s); :}
+                 | InitStatements:sl InitStatement:s NEWLINE {: sl.add(s); RESULT = sl; :}
                  ;
 
 //InitStatement ::= wit_or_newline_recursive_opt InitStatementType wit_recursive;
-InitStatement ::= InitStatementType;
+InitStatement ::= wit_or_newline_recursive_opt InitStatementType:s wit_recursive_opt {: RESULT = s; :};
 
-InitStatementType ::= GebruikStatement;
+InitStatementType ::= GebruikStatement:s {: RESULT = s; :};
 
-GebruikStatementType ::= VARNAME
-                       | ZWOOG
-                       | KLEUROOG
-                       | KOMPAS
+GebruikStatementType ::= VARNAME:n {: RESULT = new Taal20VarName(n); :}
+                       | ZWOOG {: RESULT = ZwOogConstant.INSTANCE; :}
+                       | KLEUROOG {: RESULT = KleurOogConstant.INSTANCE;; :}
+                       | KOMPAS {: RESULT = KompasConstant.INSTANCE; :}
                        ;
 
-GebruikStatement ::= GEBRUIK wit GebruikStatementType wit_recursive_opt;
+GebruikStatement ::= GEBRUIK wit GebruikStatementType:t wit_recursive_opt {: RESULT = new GebruikStatement(t); :};
 
 
 //programmaBlok_opt ::= programmaBlok | ;
 
-ProgrammaBlok ::= StatementsOpt;
+ProgrammaBlok ::= StatementsOpt:sl {: RESULT = new ProgrammaBlok(sl); :};
 
-StatementsOpt ::= Statements | ;
+StatementsOpt ::= Statements:sl {: RESULT = sl; :}
+                | {: RESULT = new ArrayList<ProgrammaStatement>(); :}
+                ;
 
-Statements ::= Statement NEWLINE
-             | Statements Statement NEWLINE
+Statements ::= Statement:s NEWLINE {: RESULT = new ArrayList<ProgrammaStatement>(); RESULT.add(s); :}
+             | Statements:sl Statement:s NEWLINE {: sl.add(s); RESULT = sl; :}
              ;
 
-Statement ::= EmptyStatement | FullStatement;
+Statement ::= EmptyStatement | FullStatement:s {: RESULT = s ; :};
 
 EmptyStatement ::= wit_or_newline_recursive_opt;
 
-FullStatement ::= wit_or_newline_recursive_opt StatementType wit_recursive_opt;
+FullStatement ::= wit_or_newline_recursive_opt StatementType:s wit_recursive_opt  {: RESULT = s; :};
 
-StatementType ::= ZolangStatement
-                | Toekenning
-                | AlsStatement
-                | AlsAndersStatement
-                | OpdrachtStatement
+StatementType ::= ZolangStatement:s {: RESULT = s; :}
+                | ToekenningStatement:s {: RESULT = s; :}
+                | OpdrachtStatement:s {: RESULT = s; :}
+                | AlsStatement:s {: RESULT = s; :}
                 ;
 
-Toekenning ::= VARNAME wit EQ wit Expressie;
+ToekenningStatement ::= VARNAME:n wit EQ wit Expressie:e {: RESULT = new ToekenningStatement(new Taal20VarName(n), e); :};
 
 
-Expressie ::= INT
-            | VARNAME
-            | MathExpression
-            | KLEUROOG
-            | ZWOOG
-            | KOMPAS
+Expressie ::= INT:i {: RESULT = new NumberExpressie(new Taal20Int(i)); :}
+            | VARNAME:n {: RESULT = new VarNameExpressie(new Taal20VarName(n)); :}
+            | MathExpression:e {: RESULT = e; :}
+            | KLEUROOG {: RESULT = KleurOogExpressie.INSTANCE; :}
+            | ZWOOG {: RESULT = ZwOogExpressie.INSTANCE; :}
+            | KOMPAS {: RESULT = KompasExpressie.INSTANCE; :}
             ;
 
 //ExpressieCalc ::= Expressie wit ExpressieCalcOperation wit Expressie;
 
 //ExpressieCalcOperation ::= PLUS | MIN | TIMES | SLASH | PERCENT;
 
-ZolangStatement ::= ZOLANG wit Vergelijking wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok wit_recursive_opt RBRACE;
+ZolangStatement ::= ZOLANG wit Vergelijking:v wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok:pb wit_recursive_opt RBRACE {: RESULT = new ZolangStatement(v, pb); :};
 
-Vergelijking ::= EqualityExpression;
+MathExpression ::= Expressie:l wit PLUS wit Expressie:r {: RESULT = new CalcExpressie(l, CalcExpressieType.PLUS, r); :}
+                 | Expressie:l wit MIN wit Expressie:r {: RESULT = new CalcExpressie(l, CalcExpressieType.MIN, r); :}
+                 | Expressie:l wit TIMES wit Expressie:r {: RESULT = new CalcExpressie(l, CalcExpressieType.TIMES, r); :}
+                 | Expressie:l wit SLASH wit Expressie:r {: RESULT = new CalcExpressie(l, CalcExpressieType.SLASH, r); :}
+                 | Expressie:l wit PERCENT wit Expressie:r {: RESULT = new CalcExpressie(l, CalcExpressieType.PERCENT, r); :};
 
-MathExpression ::= Expressie wit PLUS wit Expressie
-                 | Expressie wit MIN wit Expressie
-                 | Expressie wit TIMES wit Expressie
-                 | Expressie wit SLASH wit Expressie
-                 | Expressie wit PERCENT wit Expressie;
+Vergelijking ::= EqualityExpression:e {: RESULT = e; :};
 
-EqualityExpression ::= Expressie wit LT wit Expressie
-                     | Expressie wit GT wit Expressie
-                     | Expressie wit EQEQ wit Expressie
-                     | Expressie wit NOTEQ wit Expressie;
+EqualityExpression ::= Expressie:l wit LT wit Expressie:r {: RESULT = new EqualityExpression(l, VergelijkingType.LT, r); :}
+                     | Expressie:l wit GT wit Expressie:r {: RESULT = new EqualityExpression(l, VergelijkingType.GT, r); :}
+                     | Expressie:l wit EQEQ wit Expressie:r {: RESULT = new EqualityExpression(l, VergelijkingType.EQEQ, r); :}
+                     | Expressie:l wit NOTEQ wit Expressie:r {: RESULT = new EqualityExpression(l, VergelijkingType.NOTEQ, r); :};
 
-AlsStatement ::= ALS wit Vergelijking:v wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok:b wit_recursive_opt RBRACE {: RESULT = new AlsStatement(v, b); :};
-
-AlsAndersStatement ::= ALS wit Vergelijking:v wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok:als wit_recursive_opt RBRACE wit ANDERS wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok:anders wit_recursive_opt RBRACE {: RESULT = new AlsAndersStatement(v, als, anders); :};
+AlsStatement ::= ALS wit Vergelijking:v wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok:als wit_recursive_opt RBRACE {: RESULT = new AlsStatement(v, als); :}
+              | ALS wit Vergelijking:v wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok:als wit_recursive_opt RBRACE wit ANDERS wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok:anders wit_recursive_opt RBRACE {: RESULT = new AlsAndersStatement(v, als, anders); :};
 
 OpdrachtStatement ::= STAP_VOORUIT {: RESULT = new OpdrachtStatement(OpdrachtType.STAP_VOORUIT); :}
                     | STAP_ACHTERUIT {: RESULT = new OpdrachtStatement(OpdrachtType.STAP_ACHTERUIT); :}
