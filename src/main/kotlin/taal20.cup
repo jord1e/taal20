@@ -1,6 +1,8 @@
 package nl.jrdie.taal20._parser;
 //
 import java_cup.runtime.*;
+import nl.jrdie.taal20.ast.*;
+import java.util.ArrayList;
 
 parser code {:
     public boolean syntaxErrors;
@@ -43,34 +45,34 @@ terminal ZOLANG;
 terminal ALS, ANDERS;
 terminal GEBRUIK;
 
-terminal INT;
+terminal Integer INT;
 
 terminal KLEUROOG;
 terminal ZWOOG;
 terminal KOMPAS;
-terminal VARNAME;
+terminal String VARNAME;
 
 terminal STAP_VOORUIT;
 terminal STAP_ACHTERUIT;
 terminal DRAAI_LINKS;
 terminal DRAAI_RECHTS;
 
-nonterminal AlsAndersStatement;
-nonterminal AlsStatement;
+nonterminal AlsAndersStatement AlsAndersStatement;
+nonterminal AlsStatement AlsStatement;
 nonterminal EmptyStatement;
 nonterminal EqualityExpression;
 nonterminal Expressie;
 nonterminal FullStatement;
 nonterminal GebruikStatement;
 nonterminal GebruikStatementType;
-nonterminal InitBlok;
+nonterminal InitBlok InitBlok;
 nonterminal InitStatement;
 nonterminal InitStatementType;
 nonterminal InitStatements;
 nonterminal InitStatementsOpt;
 nonterminal MathExpression;
 nonterminal OpdrachtStatement;
-nonterminal ProgrammaBlok;
+nonterminal ProgrammaBlok ProgrammaBlok;
 nonterminal Statement;
 nonterminal StatementType;
 nonterminal Statements;
@@ -87,8 +89,8 @@ nonterminal wit_or_newline;
 nonterminal wit_or_newline_recursive;
 nonterminal wit_or_newline_recursive_opt;
 
-nonterminal programma;
-nonterminal goal;
+nonterminal Programma programma;
+nonterminal Programma goal;
 
 precedence nonassoc NEWLINE, SPACE, TAB;
 precedence left PLUS, MIN, TIMES, SLASH, PERCENT;
@@ -106,11 +108,11 @@ wit_or_newline ::= wit | NEWLINE;
 wit_or_newline_recursive ::= wit_or_newline | wit_or_newline_recursive wit_or_newline;
 wit_or_newline_recursive_opt ::= wit_or_newline_recursive | ;
 
-goal ::= programma;
+goal ::= programma:p {: RESULT = p; :};
 
-programma ::= InitBlok ProgrammaBlok;
+programma ::= InitBlok:ib ProgrammaBlok {: System.out.println("Parse successful."); RESULT = new Programma(ib); :};
 
-InitBlok ::= InitStatementsOpt;
+InitBlok ::= InitStatementsOpt {: RESULT = new InitBlok(new ArrayList<>()); :};
 
 InitStatementsOpt ::= InitStatements | ;
 

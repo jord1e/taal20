@@ -49,29 +49,50 @@ als zwOog {
 stapVooruit
 }
 """.trimStart()
+//    val test6 = """
+//gebruik zwOog
+//gebruik kleurOog
+//gebruik zwOog
+//gebruik kompas
+//
+//a = 1
+//als kleurOog == 3 {
+//stapVooruit
+//stapVooruit
+//
+//
+//
+//stapVooruit
+//draaiRechts
+//}
+//
+//stapVooruit
+//stapVooruit
+//draaiRechts
+//zolang kompas % 2 == 1 {
+//
+//draaiLinks
+//}
+//""".trimStart()
     val test = """
+gebruik a
 gebruik zwOog
 gebruik kleurOog
-gebruik zwOog
-gebruik kompas
 
-a = 1
-als kleurOog == 3 {
 stapVooruit
 stapVooruit
 
-
-
-stapVooruit
-draaiRechts
+zolang zwOog == 1 {
+    stapVooruit
 }
 
-stapVooruit
-stapVooruit
-draaiRechts
-zolang kompas % 2 == 1 {
-
 draaiLinks
+
+a = 0
+
+zolang a < 4 {
+    a = a + 1
+    stapVooruit
 }
 """.trimStart()
 
@@ -88,8 +109,11 @@ draaiLinks
     val lexer2 = Taal20Lexer(StringReader(test))
     try {
         val parser = Taal20Parser(lexer2)
-//        parser.parse()
-        parser.debug_parse()
+        val result = parser.parse()
+        val parseValue = result.value
+        println(parseValue)
+        println(parseValue.javaClass.name)
+//        parser.debug_parse()
         println("===\nGeen syntax error\n===")
     } catch (e: Exception) {
         e.printStackTrace()
