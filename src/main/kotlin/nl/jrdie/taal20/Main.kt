@@ -5,77 +5,25 @@ import java_cup.runtime.Symbol
 import nl.jrdie.taal20._parser.Taal20Parser
 import nl.jrdie.taal20._parser.Taal20SymbolType
 import nl.jrdie.taal20.lexer.Taal20Lexer
+import java.io.File
 import java.io.StringReader
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
+
+//fun readFileLineByLIne(fileName: String) = File(fileName).readText().replace("(\n|(?:\r\n)|\r|)".toRegex(), "\n")
+fun readFileLineByLIne(fileName: String) = File(fileName).readText().replace("\n|(?:\r\n)|\r".toRegex(), "\n")
 
 fun main(args: Array<String>) {
+    val codeFile = System.getProperty("user.dir") + "\\src\\main\\kotlin\\nl\\jrdie\\taal20\\code.txt"
+    val test4 = readFileLineByLIne(codeFile).trimStart()
 
     val test1 = """
 gebruik kleurOog
 gebruik zwOog
 gebruik kompas
 """.trimStart()
-    val test2 = """
-stapVooruit
-stapVooruit
-stapVooruit
-stapVooruit
-draaiRechts
-stapVooruit
-stapVooruit
-stapVooruit
-stapVooruit
-draaiLinks
-stapVooruit
-stapVooruit
-stapVooruit
-stapVooruit
-stapVooruit
-draaiLinks
-stapVooruit
-stapVooruit
-stapVooruit
-stapVooruit
-stapVooruit
-draaiRechts
-als kleurOog == 5 {
-   draaiRechts
-}
-stapVooruit
-gebruik zwOog
-""".trimStart()
-    val test3 = """
-als zwOog {
-   draaiRechts
-stapVooruit
-}
-""".trimStart()
-    val test = """
-gebruik zwOog
-gebruik kleurOog
-gebruik zwOog
-gebruik kompas
 
-a = 1
-als kleurOog == 3 {
-stapVooruit
-stapVooruit
-
-
-
-stapVooruit
-draaiRechts
-}
-
-stapVooruit
-stapVooruit
-draaiRechts
-zolang kompas % 2 == 1 {
-
-draaiLinks
-}
-""".trimStart()
-
-    val lexer = Taal20Lexer(StringReader(test))
+    val lexer = Taal20Lexer(StringReader(test4))
 
     if (true) {
         var token: Symbol?
@@ -85,7 +33,7 @@ draaiLinks
         } while (token?.sym != Taal20SymbolType.EOF)
     }
 
-    val lexer2 = Taal20Lexer(StringReader(test))
+    val lexer2 = Taal20Lexer(StringReader(test4))
     try {
         val parser = Taal20Parser(lexer2)
 //        parser.parse()
