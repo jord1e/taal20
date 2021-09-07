@@ -13,6 +13,7 @@ parser code {:
             + current_token.right + " (Token: " + Taal20SymbolType.terminalNames[current_token.sym] + ")\n", null
         );
     }
+
 :};
 
 //parser code  {:
@@ -71,14 +72,14 @@ nonterminal InitStatementType;
 nonterminal InitStatements;
 nonterminal InitStatementsOpt;
 nonterminal MathExpression;
-nonterminal OpdrachtStatement;
+nonterminal OpdrachtStatement OpdrachtStatement;
 nonterminal ProgrammaBlok ProgrammaBlok;
-nonterminal Statement;
+nonterminal ProgrammaStatement Statement;
 nonterminal StatementType;
 nonterminal Statements;
 nonterminal StatementsOpt;
 nonterminal Toekenning;
-nonterminal Vergelijking;
+nonterminal Vergelijking Vergelijking;
 nonterminal ZolangStatement;
 
 nonterminal space_or_tab;
@@ -112,7 +113,7 @@ goal ::= programma:p {: RESULT = p; :};
 
 programma ::= InitBlok:ib ProgrammaBlok {: System.out.println("Parse successful."); RESULT = new Programma(ib); :};
 
-InitBlok ::= InitStatementsOpt {: RESULT = new InitBlok(new ArrayList<>()); :};
+InitBlok ::= InitStatementsOpt:s {: RESULT = new InitBlok(new ArrayList<>()); :};
 
 InitStatementsOpt ::= InitStatements | ;
 
@@ -187,8 +188,11 @@ EqualityExpression ::= Expressie wit LT wit Expressie
                      | Expressie wit EQEQ wit Expressie
                      | Expressie wit NOTEQ wit Expressie;
 
-AlsStatement ::= ALS wit Vergelijking wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok wit_recursive_opt RBRACE;
+AlsStatement ::= ALS wit Vergelijking:v wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok:b wit_recursive_opt RBRACE {: RESULT = new AlsStatement(v, b); :};
 
-AlsAndersStatement ::= ALS wit Vergelijking wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok wit_recursive_opt RBRACE wit ANDERS wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok wit_recursive_opt RBRACE;
+AlsAndersStatement ::= ALS wit Vergelijking:v wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok:als wit_recursive_opt RBRACE wit ANDERS wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok:anders wit_recursive_opt RBRACE {: RESULT = new AlsAndersStatement(v, als, anders); :};
 
-OpdrachtStatement ::= STAP_VOORUIT | STAP_ACHTERUIT | DRAAI_LINKS | DRAAI_RECHTS;
+OpdrachtStatement ::= STAP_VOORUIT {: RESULT = new OpdrachtStatement(OpdrachtType.STAP_VOORUIT); :}
+                    | STAP_ACHTERUIT {: RESULT = new OpdrachtStatement(OpdrachtType.STAP_ACHTERUIT); :}
+                    | DRAAI_LINKS {: RESULT = new OpdrachtStatement(OpdrachtType.DRAAI_LINKS); :}
+                    | DRAAI_RECHTS {: RESULT = new OpdrachtStatement(OpdrachtType.DRAAI_RECHTS); :};

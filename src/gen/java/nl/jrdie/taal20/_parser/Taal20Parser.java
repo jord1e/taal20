@@ -322,6 +322,7 @@ public class Taal20Parser extends java_cup.runtime.lr_parser {
     }
 
 
+
 /** Cup generated class to encapsulate user supplied action code.*/
 @SuppressWarnings({"rawtypes", "unchecked", "unused"})
 class CUP$Taal20Parser$actions {
@@ -514,6 +515,9 @@ class CUP$Taal20Parser$actions {
           case 17: // InitBlok ::= InitStatementsOpt 
             {
               InitBlok RESULT =null;
+		int sleft = ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()).left;
+		int sright = ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()).right;
+		Object s = (Object)((java_cup.runtime.Symbol) CUP$Taal20Parser$stack.peek()).value;
 		 RESULT = new InitBlok(new ArrayList<>()); 
               CUP$Taal20Parser$result = parser.getSymbolFactory().newSymbol("InitBlok",8, ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), RESULT);
             }
@@ -666,7 +670,7 @@ class CUP$Taal20Parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 34: // Statement ::= EmptyStatement 
             {
-              Object RESULT =null;
+              ProgrammaStatement RESULT =null;
 
               CUP$Taal20Parser$result = parser.getSymbolFactory().newSymbol("Statement",16, ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), RESULT);
             }
@@ -675,7 +679,7 @@ class CUP$Taal20Parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 35: // Statement ::= FullStatement 
             {
-              Object RESULT =null;
+              ProgrammaStatement RESULT =null;
 
               CUP$Taal20Parser$result = parser.getSymbolFactory().newSymbol("Statement",16, ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), RESULT);
             }
@@ -819,7 +823,7 @@ class CUP$Taal20Parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 51: // Vergelijking ::= EqualityExpression 
             {
-              Object RESULT =null;
+              Vergelijking RESULT =null;
 
               CUP$Taal20Parser$result = parser.getSymbolFactory().newSymbol("Vergelijking",21, ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), RESULT);
             }
@@ -910,7 +914,13 @@ class CUP$Taal20Parser$actions {
           case 61: // AlsStatement ::= ALS wit Vergelijking wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok wit_recursive_opt RBRACE 
             {
               AlsStatement RESULT =null;
-
+		int vleft = ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.elementAt(CUP$Taal20Parser$top-7)).left;
+		int vright = ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.elementAt(CUP$Taal20Parser$top-7)).right;
+		Vergelijking v = (Vergelijking)((java_cup.runtime.Symbol) CUP$Taal20Parser$stack.elementAt(CUP$Taal20Parser$top-7)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.elementAt(CUP$Taal20Parser$top-2)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.elementAt(CUP$Taal20Parser$top-2)).right;
+		ProgrammaBlok b = (ProgrammaBlok)((java_cup.runtime.Symbol) CUP$Taal20Parser$stack.elementAt(CUP$Taal20Parser$top-2)).value;
+		 RESULT = new AlsStatement(v, b); 
               CUP$Taal20Parser$result = parser.getSymbolFactory().newSymbol("AlsStatement",1, ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.elementAt(CUP$Taal20Parser$top-9)), ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), RESULT);
             }
           return CUP$Taal20Parser$result;
@@ -919,7 +929,16 @@ class CUP$Taal20Parser$actions {
           case 62: // AlsAndersStatement ::= ALS wit Vergelijking wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok wit_recursive_opt RBRACE wit ANDERS wit LBRACE wit_recursive_opt NEWLINE ProgrammaBlok wit_recursive_opt RBRACE 
             {
               AlsAndersStatement RESULT =null;
-
+		int vleft = ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.elementAt(CUP$Taal20Parser$top-16)).left;
+		int vright = ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.elementAt(CUP$Taal20Parser$top-16)).right;
+		Vergelijking v = (Vergelijking)((java_cup.runtime.Symbol) CUP$Taal20Parser$stack.elementAt(CUP$Taal20Parser$top-16)).value;
+		int alsleft = ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.elementAt(CUP$Taal20Parser$top-11)).left;
+		int alsright = ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.elementAt(CUP$Taal20Parser$top-11)).right;
+		ProgrammaBlok als = (ProgrammaBlok)((java_cup.runtime.Symbol) CUP$Taal20Parser$stack.elementAt(CUP$Taal20Parser$top-11)).value;
+		int andersleft = ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.elementAt(CUP$Taal20Parser$top-2)).left;
+		int andersright = ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.elementAt(CUP$Taal20Parser$top-2)).right;
+		ProgrammaBlok anders = (ProgrammaBlok)((java_cup.runtime.Symbol) CUP$Taal20Parser$stack.elementAt(CUP$Taal20Parser$top-2)).value;
+		 RESULT = new AlsAndersStatement(v, als, anders); 
               CUP$Taal20Parser$result = parser.getSymbolFactory().newSymbol("AlsAndersStatement",0, ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.elementAt(CUP$Taal20Parser$top-18)), ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), RESULT);
             }
           return CUP$Taal20Parser$result;
@@ -927,8 +946,8 @@ class CUP$Taal20Parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 63: // OpdrachtStatement ::= STAP_VOORUIT 
             {
-              Object RESULT =null;
-
+              OpdrachtStatement RESULT =null;
+		 RESULT = new OpdrachtStatement(OpdrachtType.STAP_VOORUIT); 
               CUP$Taal20Parser$result = parser.getSymbolFactory().newSymbol("OpdrachtStatement",14, ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), RESULT);
             }
           return CUP$Taal20Parser$result;
@@ -936,8 +955,8 @@ class CUP$Taal20Parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 64: // OpdrachtStatement ::= STAP_ACHTERUIT 
             {
-              Object RESULT =null;
-
+              OpdrachtStatement RESULT =null;
+		 RESULT = new OpdrachtStatement(OpdrachtType.STAP_ACHTERUIT); 
               CUP$Taal20Parser$result = parser.getSymbolFactory().newSymbol("OpdrachtStatement",14, ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), RESULT);
             }
           return CUP$Taal20Parser$result;
@@ -945,8 +964,8 @@ class CUP$Taal20Parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 65: // OpdrachtStatement ::= DRAAI_LINKS 
             {
-              Object RESULT =null;
-
+              OpdrachtStatement RESULT =null;
+		 RESULT = new OpdrachtStatement(OpdrachtType.DRAAI_LINKS); 
               CUP$Taal20Parser$result = parser.getSymbolFactory().newSymbol("OpdrachtStatement",14, ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), RESULT);
             }
           return CUP$Taal20Parser$result;
@@ -954,8 +973,8 @@ class CUP$Taal20Parser$actions {
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 66: // OpdrachtStatement ::= DRAAI_RECHTS 
             {
-              Object RESULT =null;
-
+              OpdrachtStatement RESULT =null;
+		 RESULT = new OpdrachtStatement(OpdrachtType.DRAAI_RECHTS); 
               CUP$Taal20Parser$result = parser.getSymbolFactory().newSymbol("OpdrachtStatement",14, ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Taal20Parser$stack.peek()), RESULT);
             }
           return CUP$Taal20Parser$result;
