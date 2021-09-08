@@ -7,7 +7,6 @@ object GladeLoader {
 
     fun loadMaze(matrix: String): Glade {
         val size = sqrt(matrix.count { it == ';' } + 1.0).toInt()
-        println(size)
         val codes = matrix.split(";")
         val nested = (0..(size-1)).map { codes.subList(it * size, it * size + 20)
             .map { code -> codeToTile(code)

@@ -46,12 +46,12 @@ class Taal20Interpreter(
         }
     }
 
-    // Return value is of game moet doorgaan
-    private fun check(): Boolean {
+    // Return false = game moet doorgaan
+    private fun isFinished(): Boolean {
         if (finished || error) {
-            return false;
+            return true
         }
-        return true
+        return false
     }
 
     private fun runCallback() {
@@ -81,7 +81,6 @@ class Taal20Interpreter(
     }
 
     private fun debug(message: String) {
-//        println(message)
     }
 
     fun interpret() {
@@ -99,7 +98,6 @@ class Taal20Interpreter(
             .sortedBy { it.first.value }
             .associate { it.second to false }
             .toMutableMap()
-//        println(doelen)
 
         message("start kapitaal: " + kostenkaart[START_KAPITAAL])
         val astCost = CostAnalyzer().analyzeAst(programma)
@@ -119,22 +117,20 @@ class Taal20Interpreter(
 
         programmaBlok(programma.programmaBlok)
 
-//        messages
-//            .forEach { println(it) }
+        finish()
     }
 
     private fun programmaBlok(programmaBlok: ProgrammaBlok) {
-        if (!check()) {
+        if (isFinished()) {
             return
         }
         programmaBlok
             .statements
             .forEach { programmaStatement(it) }
-        finish()
     }
 
     private fun programmaStatement(stmt: ProgrammaStatement) {
-        if (!check()) {
+        if (isFinished()) {
             return
         }
         when (stmt) {
@@ -230,7 +226,7 @@ class Taal20Interpreter(
 
     private fun opdrachtStatement(stmt: OpdrachtStatement) {
 //                message(direction.toString() + " " + position.bracketNotation())
-        if (!check()) {
+        if (isFinished()) {
             return
         }
         nextSecond()
@@ -294,11 +290,11 @@ class Taal20Interpreter(
     }
 
     private fun zolangStatement(stmt: ZolangStatement) {
-        if (!check()) {
+        if (isFinished()) {
             return
         }
         while (checkEquality(stmt.equalityExpression)) {
-            if (!check()) {
+            if (isFinished()) {
                 return
             }
             programmaBlok(stmt.code)
@@ -306,7 +302,7 @@ class Taal20Interpreter(
     }
 
     private fun alsStatement(stmt: AlsStatement) {
-        if (!check()) {
+        if (isFinished()) {
             return
         }
         if (checkEquality(stmt.equalityExpression)) {
@@ -315,7 +311,7 @@ class Taal20Interpreter(
     }
 
     private fun alsAndersStatement(stmt: AlsAndersStatement) {
-        if (!check()) {
+        if (isFinished()) {
             return
         }
         if (checkEquality(stmt.equalityExpression)) {
@@ -336,7 +332,7 @@ class Taal20Interpreter(
     }
 
     private fun checkEquality(expression: EqualityExpression): Boolean {
-        if (!check()) {
+        if (isFinished()) {
             return false
         }
         val left: Int = reduceExpressie(expression.left)
@@ -394,7 +390,6 @@ class Taal20Interpreter(
                     error("Geen kompas")
                     return -1
                 }
-//                println("A:" +direction.ordinal)
                 cost(VERBRUIK_KOMPAS, "kosten voor gebruik kompas: {cost}")
                 return when (direction) {
                     Direction.NOORD -> 0
@@ -435,7 +430,7 @@ class Taal20Interpreter(
     }
 
     private fun gebruikStatement(stmt: GebruikStatement) {
-        if (!check()) {
+        if (isFinished()) {
             return
         }
         when (stmt.type) {
