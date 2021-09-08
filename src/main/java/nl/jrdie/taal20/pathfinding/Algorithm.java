@@ -45,8 +45,6 @@ public class Algorithm {
             if (nodes.get(i).fCost < f && !nodes.get(i).scanned) {
                 f = nodes.get(i).fCost;
                 index = i;
-            } else if (nodes.get(i).fCost == f && !nodes.get(i).scanned) {
-                index = -1;
             }
         }
         return index;
@@ -61,6 +59,15 @@ public class Algorithm {
                 index = i;
             }
             //System.out.println(nodes.get(i).hCost+" yo "+nodes.get(i).scanned);
+        }
+        if (index == -1) {
+            for (int i = 0; i < nodes.size(); i++) {
+                if (nodes.get(i).hCost < h) {
+                    h = nodes.get(i).hCost;
+                    index = i;
+                }
+                //System.out.println(nodes.get(i).hCost+" yo "+nodes.get(i).scanned);
+            }
         }
         return index;
     }
@@ -85,7 +92,7 @@ public class Algorithm {
 
     public static String FindPath(int size, String maze) {
         String[] maze_ = maze.split(";");
-        System.out.println("Vakjes: "+maze_.length);
+        System.out.println("Vakjes: " + maze_.length);
         grid = new String[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -96,7 +103,7 @@ public class Algorithm {
         int startingdirection = Integer.parseInt(maze.split("S")[1].charAt(0) + "");
         int koe = Arrays.asList(maze_).indexOf("S" + startingdirection);
         startPos = new Vector2(koe % size, (int) Math.floor((float) koe / (float) size));
-
+        System.out.println("StartPos: " + startPos);
         String[] goals_ = maze.split("D");
         String[] goals = new String[goals_.length - 1];
         for (int i = 0; i < goals_.length - 1; i++) {
@@ -108,8 +115,8 @@ public class Algorithm {
             destinations[i] = new Vector2(kip % size, (int) Math.floor((float) kip / (float) size));
         }
 
-        destination = destinations[0];
-
+        destination = destinations[2];
+        System.out.println("Destination: "+destination+"; "+goals[2]);
         List<String> path = new ArrayList<>();
 
         int aantal = 0;
