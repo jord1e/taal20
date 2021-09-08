@@ -114,7 +114,6 @@ public class Algorithm {
             int kip = Arrays.asList(maze_).indexOf(goals[i]);
             destinations[i] = new Vector2(kip % size, (int) Math.floor((float) kip / (float) size));
         }
-
         destination = destinations[2];
         System.out.println("Destination: "+destination+"; "+goals[2]);
         List<String> path = new ArrayList<>();
@@ -146,6 +145,7 @@ public class Algorithm {
         currentPos = destination;
         int direction = -1;
         aantal = 0;
+        List<Node> pad = new ArrayList<>();
         while (aantal < 1000) {
             List<Vector2> tiles = new ArrayList<>();
             List<Float> waardes = new ArrayList<>();
@@ -171,6 +171,7 @@ public class Algorithm {
                 }
                 path.add(lines[0]);*/
             }
+
             int richting = GetLowestIndex(waardes);
             if (direction == -1) direction = richting;
             if (direction == 0) {
@@ -199,10 +200,11 @@ public class Algorithm {
             }
             path.add(lines[0]);
             currentPos = new Vector2((int) tiles.get(GetLowestIndex(waardes)).x, (int) tiles.get(GetLowestIndex(waardes)).y);
+            System.out.println(currentPos);
             if (waardes.get(GetLowestIndex(waardes)) == 1) break;
             aantal++;
         }
-
+        /*
         if (startingdirection < direction) {
             if (direction == 3 && startingdirection == 0)
                 path.add(lines[1]);
@@ -214,8 +216,8 @@ public class Algorithm {
             else
                 path.add(lines[1]);
         }
-
-        String output = null;
+        */
+        String output = "";
         for (int i = path.size() - 1; i >= 0; i--) {
             output += path.get(i) + "\n";
         }
