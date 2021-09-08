@@ -32,7 +32,7 @@ tasks {
     }
 
     withType<KotlinCompile>() {
-        kotlinOptions.jvmTarget = "13"
+        kotlinOptions.jvmTarget = "12"
     }
 
     jcup {
@@ -72,7 +72,7 @@ distributions {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(13))
+        languageVersion.set(JavaLanguageVersion.of(12))
     }
     sourceSets {
         main {

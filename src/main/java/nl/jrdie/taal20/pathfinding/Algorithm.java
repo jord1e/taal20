@@ -34,7 +34,7 @@ public class Algorithm {
         {
             if (values.get(i) < a)
             {
-                a = Integer.parseInt(values.get(i).toString());
+                a = Math.round(values.get(i));
                 index = i;
             }
         }
@@ -70,7 +70,7 @@ public class Algorithm {
                 h = nodes.get(i).hCost;
                 index = i;
             }
-            System.out.println(nodes.get(i).hCost+" yo "+nodes.get(i).scanned);
+            //System.out.println(nodes.get(i).hCost+" yo "+nodes.get(i).scanned);
         }
         return index;
     }
@@ -110,12 +110,10 @@ public class Algorithm {
         int koe = Arrays.asList(maze_).indexOf("S"+startingdirection);
         startPos = new Vector2(koe % size, (int)Math.floor((float)koe / (float)size));
 
-        System.out.println(startPos.x + " yo uowe "+ startPos.y);
-
         String[] goals_ = maze.split("D");
         String[] goals = new String[goals_.length-1];
         for (int i = 0; i < goals_.length-1; i++) {
-            goals[i] = "D"+goals_[1+i];
+            goals[i] = "D"+goals_[1+i].charAt(0);
         }
         Vector2[] destinations = new Vector2[goals.length];
         for (int i = 0; i < goals.length; i++) {
