@@ -10,30 +10,26 @@ public class Algorithm {
     static Vector2 startPos;
     static Vector2 destination;
     static Vector2 currentPos;
-    static final Vector2[] checks = { new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, -1), new Vector2(-1, 0) };
-    static final String[] lines = {"stapVooruit","draaiLinks","draaiRechts"};
+    static final Vector2[] checks = {new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, -1), new Vector2(-1, 0)};
+    static final String[] lines = {"stapVooruit", "draaiLinks", "draaiRechts"};
 
-    static int GetH(Vector2 pos)
-    {
-        if (grid[(int)pos.x][(int)pos.y].contains("O"))
+    static int GetH(Vector2 pos) {
+        if (grid[(int) pos.x][(int) pos.y].contains("O"))
             return Integer.MAX_VALUE;
-        return (int)(Math.abs(destination.x - pos.x) + Math.abs(destination.y - pos.y));
+        return (int) (Math.abs(destination.x - pos.x) + Math.abs(destination.y - pos.y));
     }
-    static int GetF(Vector2 pos, int g)
-    {
-        if (grid[(int)pos.x][(int)pos.y].contains("O"))
+
+    static int GetF(Vector2 pos, int g) {
+        if (grid[(int) pos.x][(int) pos.y].contains("O"))
             return Integer.MAX_VALUE;
         return g + GetH(pos);
     }
 
-    static int GetLowestIndex(List<Float> values)
-    {
+    static int GetLowestIndex(List<Float> values) {
         int a = Integer.MAX_VALUE;
         int index = -1;
-        for (int i = 0; i < values.size(); i++)
-        {
-            if (values.get(i) < a)
-            {
+        for (int i = 0; i < values.size(); i++) {
+            if (values.get(i) < a) {
                 a = Math.round(values.get(i));
                 index = i;
             }
@@ -42,31 +38,25 @@ public class Algorithm {
         return index;
     }
 
-    public static int GetLowestF(List<Node> nodes)
-    {
+    public static int GetLowestF(List<Node> nodes) {
         int f = Integer.MAX_VALUE;
         int index = -1;
-        for(int i = 0; i < nodes.size(); i++)
-        {
-            if(nodes.get(i).fCost < f && !nodes.get(i).scanned)
-            {
+        for (int i = 0; i < nodes.size(); i++) {
+            if (nodes.get(i).fCost < f && !nodes.get(i).scanned) {
                 f = nodes.get(i).fCost;
                 index = i;
-            } else if (nodes.get(i).fCost == f && !nodes.get(i).scanned)
-            {
+            } else if (nodes.get(i).fCost == f && !nodes.get(i).scanned) {
                 index = -1;
             }
         }
         return index;
     }
-    public static int GetLowestH(List<Node> nodes)
-    {
+
+    public static int GetLowestH(List<Node> nodes) {
         int h = Integer.MAX_VALUE;
         int index = -1;
-        for (int i = 0; i < nodes.size(); i++)
-        {
-            if (nodes.get(i).hCost < h && !nodes.get(i).scanned)
-            {
+        for (int i = 0; i < nodes.size(); i++) {
+            if (nodes.get(i).hCost < h && !nodes.get(i).scanned) {
                 h = nodes.get(i).hCost;
                 index = i;
             }
@@ -75,8 +65,7 @@ public class Algorithm {
         return index;
     }
 
-    public static boolean hasNode(List<Node> nodes, int x, int y)
-    {
+    public static boolean hasNode(List<Node> nodes, int x, int y) {
         for (Node node : nodes) {
             if (node.x == x && node.y == y) {
                 return true;
@@ -85,8 +74,7 @@ public class Algorithm {
         return false;
     }
 
-    public static int GetG(List<Node> nodes, int x, int y)
-    {
+    public static int GetG(List<Node> nodes, int x, int y) {
         for (Node node : nodes) {
             if (node.x == x && node.y == y) {
                 return node.gCost;
@@ -95,30 +83,29 @@ public class Algorithm {
         return 0;
     }
 
-    public static String FindPath(int size, String maze)
-    {
+    public static String FindPath(int size, String maze) {
         String[] maze_ = maze.split(";");
-
+        System.out.println("Vakjes: "+maze_.length);
         grid = new String[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                grid[i][j] = maze_[i*size + j];
+                grid[i][j] = maze_[i * size + j];
             }
         }
 
-        int startingdirection = Integer.parseInt(maze.split("S")[1].charAt(0)+"");
-        int koe = Arrays.asList(maze_).indexOf("S"+startingdirection);
-        startPos = new Vector2(koe % size, (int)Math.floor((float)koe / (float)size));
+        int startingdirection = Integer.parseInt(maze.split("S")[1].charAt(0) + "");
+        int koe = Arrays.asList(maze_).indexOf("S" + startingdirection);
+        startPos = new Vector2(koe % size, (int) Math.floor((float) koe / (float) size));
 
         String[] goals_ = maze.split("D");
-        String[] goals = new String[goals_.length-1];
-        for (int i = 0; i < goals_.length-1; i++) {
-            goals[i] = "D"+goals_[1+i].charAt(0);
+        String[] goals = new String[goals_.length - 1];
+        for (int i = 0; i < goals_.length - 1; i++) {
+            goals[i] = "D" + goals_[1 + i].charAt(0);
         }
         Vector2[] destinations = new Vector2[goals.length];
         for (int i = 0; i < goals.length; i++) {
             int kip = Arrays.asList(maze_).indexOf(goals[i]);
-            destinations[i] = new Vector2(kip % size, (int)Math.floor((float)kip / (float)size));
+            destinations[i] = new Vector2(kip % size, (int) Math.floor((float) kip / (float) size));
         }
 
         destination = destinations[0];
@@ -128,16 +115,15 @@ public class Algorithm {
         int aantal = 0;
         Node node = null;
         List<Node> nodes = new ArrayList<>();
-        nodes.add(new Node((int)startPos.x, (int)startPos.y, 0, GetH(startPos), GetH(startPos)));
-        while (aantal < 1000)
-        {
+        nodes.add(new Node((int) startPos.x, (int) startPos.y, 0, GetH(startPos), GetH(startPos)));
+        while (aantal < 1000) {
             int aap = GetLowestF(nodes);
-            if(aap == -1)
+            if (aap == -1)
                 node = nodes.get(GetLowestH(nodes));
             else
                 node = nodes.get(aap);
             node.scanned = true;
-            if (node.x == (int)destination.x && node.y == (int)destination.y)
+            if (node.x == (int) destination.x && node.y == (int) destination.y)
                 break;
             for (Vector2 check : checks) {
                 int a = node.x - (int) check.x;
@@ -153,8 +139,7 @@ public class Algorithm {
         currentPos = destination;
         int direction = -1;
         aantal = 0;
-        while (aantal < 1000)
-        {
+        while (aantal < 1000) {
             List<Vector2> tiles = new ArrayList<>();
             List<Float> waardes = new ArrayList<>();
             for (int i = 0; i < checks.length; i++) {
@@ -165,7 +150,7 @@ public class Algorithm {
                 tiles.add(new Vector2(a, b));
                 int g = GetG(nodes, a, b);
                 waardes.add(g == 0 ? Float.MAX_VALUE : g);
-                if (direction == -1) direction = i;
+                /*if (direction == -1) direction = i;
                 if (i < direction) {
                     if (direction == 3 && i == 0)
                         path.add(lines[1]);
@@ -177,9 +162,36 @@ public class Algorithm {
                     else
                         path.add(lines[1]);
                 }
-                path.add(lines[0]);
+                path.add(lines[0]);*/
             }
-            currentPos = new Vector2((int)tiles.get(GetLowestIndex(waardes)).x, (int)tiles.get(GetLowestIndex(waardes)).y);
+            int richting = GetLowestIndex(waardes);
+            if (direction == -1) direction = richting;
+            if (direction == 0) {
+                if (richting == 1) {
+                    path.add(lines[2]);
+                } else if (richting == 3) {
+                    path.add(lines[1]);
+                }
+                direction = richting;
+            } else if (direction == 1 || direction == 2) {
+                if (richting > direction) {
+                    direction++;
+                    path.add(lines[2]);
+                } else if (richting < direction) {
+                    direction--;
+                    path.add(lines[1]);
+                }
+            } else if (direction == 3) {
+                if (richting == 0) {
+                    direction = 0;
+                    path.add(lines[2]);
+                } else if (richting == 2) {
+                    direction = 2;
+                    path.add(lines[1]);
+                }
+            }
+            path.add(lines[0]);
+            currentPos = new Vector2((int) tiles.get(GetLowestIndex(waardes)).x, (int) tiles.get(GetLowestIndex(waardes)).y);
             if (waardes.get(GetLowestIndex(waardes)) == 1) break;
             aantal++;
         }
@@ -197,8 +209,8 @@ public class Algorithm {
         }
 
         String output = null;
-        for (int i = path.size()-1; i >= 0; i--) {
-            output += path.get(i)+"\n";
+        for (int i = path.size() - 1; i >= 0; i--) {
+            output += path.get(i) + "\n";
         }
 
         return output;
