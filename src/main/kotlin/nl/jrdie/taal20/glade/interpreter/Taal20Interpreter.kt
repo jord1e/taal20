@@ -1,6 +1,7 @@
 package nl.jrdie.taal20.glade.interpreter
 
 import nl.jrdie.taal20.ast.*
+import nl.jrdie.taal20.cost.CostAnalyzer
 import nl.jrdie.taal20.data.Kostenkaart
 import nl.jrdie.taal20.data.KostenkaartField
 import nl.jrdie.taal20.data.KostenkaartField.*
@@ -10,7 +11,7 @@ import nl.jrdie.taal20.glade.models.Point
 import java.util.LinkedList
 
 class Taal20Interpreter(
-    val glade: Glade,
+    val startGlade: Glade,
     val programma: Programma,
     val kostenkaart: Kostenkaart,
 ) {
@@ -25,22 +26,34 @@ class Taal20Interpreter(
     var position: Point = Point(0, 0) // TODO bepalen
     var direction: Direction = Direction.NOORD // TODO bepalen
     var error = false
+    var finished = false;
     var bonusTilesVisited = mutableSetOf<Point>()
-
-    var zolangCount = 0
-    var alsCount = 0
-    var opdrachtCount = 0
-    var toekenningCount = 0
+    var doelen = mutableMapOf<Point, Boolean>()
+    var second = 0
+    var glade = startGlade
 
     private fun cost(field: KostenkaartField, message: String) {
         val cost = kostenkaart[field]!!
-        messages.add(message.replace("{cost}", cost.toString()))
+        message(message.replace("{cost}", cost.toString()))
         totalCost += cost
+        val remainingBudget = kostenkaart[START_KAPITAAL]!! - totalCost
+        if (remainingBudget < 0) {
+            error("budget op: $remainingBudget")
+        }
+    }
+
+    // Return value is of game moet doorgaan
+    private fun nextSecond(): Boolean {
+        if (finished || error) {
+            return false;
+        }
+        second++
+        return true
     }
 
     @Throws(RuntimeException::class)
     private fun error(message: String) {
-        throw RuntimeException(messages.joinToString("\n") + "\n" +
+        throw RuntimeException("\n" + messages.joinToString("\n") + "\n" +
             "=== GLADE INTERPRETER EXCEPTION ===\n" +
                     "$message\n" +
                     "=== --------------------------- ==="
@@ -48,14 +61,48 @@ class Taal20Interpreter(
         error = true;
     }
 
+    var stop = 0;
+
     private fun message(message: String) {
+        stop++
+        if (stop < 100) {
+
+            println(message)
+        }
         messages.add(message)
+    }
+
+    private fun debug(message: String) {
+//        println(message)
     }
 
     fun interpret() {
         val start = glade.findFirstTileOfType<StartTile>()
         position = start.second
         direction = start.first.startDirection()
+        debug("start at ${position.bracketNotation()} heading ${direction.name}")
+
+        val startTiles = glade.findTilesOfType<DoelTile>()
+        if (startTiles.size != startTiles.distinctBy { it.first.value }.size) {
+            error("Dubbele start tiles van 1 soort $startTiles")
+            return
+        }
+        doelen = startTiles
+            .sortedBy { it.first.value }
+            .associate { it.second to false }
+            .toMutableMap()
+        println(doelen)
+
+        message("start kapitaal: " + kostenkaart[START_KAPITAAL])
+        val astCost = CostAnalyzer().analyzeAst(programma)
+        totalCost += astCost.zolangCount * kostenkaart[SOFTWARE_ZOLANG_LUS]!!
+        totalCost += astCost.alsCount * kostenkaart[SOFTWARE_ALS_KEUZE]!!
+        totalCost += astCost.opdrachtCount * kostenkaart[SOFTWARE_OPDRACHT]!!
+        totalCost += astCost.toekenningCount * kostenkaart[SOFTWARE_TOEKENNING]!!
+        message("kosten zolang: ${astCost.zolangCount} * ${kostenkaart[SOFTWARE_ZOLANG_LUS]}")
+        message("kosten als: ${astCost.alsCount} * ${kostenkaart[SOFTWARE_ALS_KEUZE]}")
+        message("kosten opdracht: ${astCost.opdrachtCount} * ${kostenkaart[SOFTWARE_OPDRACHT]}")
+        message("kosten toekenning: ${astCost.toekenningCount} * ${kostenkaart[SOFTWARE_TOEKENNING]}")
 
         programma
             .initBlok
@@ -64,25 +111,18 @@ class Taal20Interpreter(
 
         programmaBlok(programma.programmaBlok)
 
-        messages.addFirst("kosten toekenning: $toekenningCount * ${kostenkaart[SOFTWARE_TOEKENNING]}")
-        messages.addFirst("kosten opdracht: $opdrachtCount * ${kostenkaart[SOFTWARE_OPDRACHT]}")
-        messages.addFirst("kosten als: $alsCount * ${kostenkaart[SOFTWARE_ALS_KEUZE]}")
-        messages.addFirst("kosten zolang: $zolangCount * ${kostenkaart[SOFTWARE_ZOLANG_LUS]}")
-        messages.addFirst("start kapitaal: " + kostenkaart[START_KAPITAAL])
+
 
         val eindKapitaal = kostenkaart[START_KAPITAAL]!! - totalCost
-        message("eind kapitaal :$eindKapitaal")
-//         TODO > of >=
-//        if (eindKapitaal >= 0 && doelGehaald) {
-//            message("Doel bereikt binnen budget")
-//        }
-
+        val last = messages.removeLast()
+        messages.addLast("eind kapitaal :$eindKapitaal")
+        messages.add(last)
         messages
             .forEach { println(it) }
     }
 
     private fun programmaBlok(programmaBlok: ProgrammaBlok) {
-        if (error) {
+        if (!nextSecond()) {
             return
         }
         programmaBlok
@@ -91,7 +131,7 @@ class Taal20Interpreter(
     }
 
     private fun programmaStatement(stmt: ProgrammaStatement) {
-        if (error) {
+        if (!nextSecond()) {
             return
         }
         when (stmt) {
@@ -119,11 +159,45 @@ class Taal20Interpreter(
                 }
             }
             is DraaiTile -> {
-                return true to {}
+                return true to {
+                    val steps = newTile.value
+                    val newDirection = when (newTile.value) {
+                        0 -> Direction.randomDirection()
+                        else -> direction.right(steps)
+                    }
+                    direction = newDirection
+                    message("nieuwe richting na draaien = ${newDirection.ordinal}")
+                    debug("> gedraaid naar ${newDirection.name}")
+                }
             }
             is DoelTile -> {
-                error("Doel behaald")
-                return true to {}
+                return true to {
+//                    doelen.cont { it.second == newPoint }
+                    var isReached = true
+                    for (entry in doelen) {
+                        debug("doel test: $entry")
+//                        debug("doel behaald S${newTile.value} at ${newPoint.bracketNotation()}")
+                        if (entry.key == newPoint) {
+                            if (isReached) {
+                                if(doelen[newPoint] == false) {
+                                    doelen[newPoint] = true
+                                    message("doel [${newPoint.x}, ${newPoint.y}] bereikt")
+                                }
+                                if (!doelen.values.contains(false)) {
+                                    message("Doel bereikt binnen budget")
+                                    finished = true
+                                }
+                                break
+                            }
+                        } else {
+                            isReached = entry.value
+                            if (!isReached) {
+                                // Doel hiervoor was nog niet bereikt (als je op D2 stapt en D1 nog niet hebt gehad)
+                                break
+                            }
+                        }
+                    }
+                }
             }
             is BomTile -> {
                 return true to {}
@@ -136,8 +210,9 @@ class Taal20Interpreter(
 
     private fun opdrachtStatement(stmt: OpdrachtStatement) {
 //                message(direction.toString() + " " + position.bracketNotation())
-
-        opdrachtCount++
+        if (!nextSecond()) {
+            return
+        }
         when (stmt.type) {
             OpdrachtType.STAP_VOORUIT -> {
                 val newPoint = position.incInDirection(direction)
@@ -170,28 +245,42 @@ class Taal20Interpreter(
             }
             OpdrachtType.DRAAI_LINKS -> {
                 direction = direction.left()
+                debug("> gedraaid naar ${direction.name} (links)")
                 cost(VERBRUIK_DRAAI_LINKS, "kosten voor het draaien naar links: {cost}")
             }
             OpdrachtType.DRAAI_RECHTS -> {
                 direction = direction.right()
+                debug("> gedraaid naar ${direction.name} (rechts)")
                 cost(VERBRUIK_DRAAI_RECHTS, "kosten voor het draaien naar rechts: {cost}")
             }
         }
     }
 
     private fun zolangStatement(stmt: ZolangStatement) {
+        if (!nextSecond()) {
+            return
+        }
         while (checkEquality(stmt.equalityExpression)) {
+            if (!nextSecond()) {
+                return
+            }
             programmaBlok(stmt.code)
         }
     }
 
     private fun alsStatement(stmt: AlsStatement) {
+        if (!nextSecond()) {
+            return
+        }
         if (checkEquality(stmt.equalityExpression)) {
             programmaBlok(stmt.als)
         }
     }
 
     private fun alsAndersStatement(stmt: AlsAndersStatement) {
+        if (!nextSecond()) {
+            return
+        }
         if (checkEquality(stmt.equalityExpression)) {
             programmaBlok(stmt.als)
         } else {
@@ -210,6 +299,9 @@ class Taal20Interpreter(
     }
 
     private fun checkEquality(expression: EqualityExpression): Boolean {
+        if (!nextSecond()) {
+            return false
+        }
         val left: Int = reduceExpressie(expression.left)
         val right: Int = reduceExpressie(expression.right)
         cost(VERBRUIK_VERGELIJKING, "kosten voor het vergelijken: {cost}")
@@ -301,6 +393,9 @@ class Taal20Interpreter(
     }
 
     private fun gebruikStatement(stmt: GebruikStatement) {
+        if (!nextSecond()) {
+            return
+        }
         when (stmt.type) {
             is Taal20VarName -> {
                 val varName = stmt.type.value

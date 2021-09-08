@@ -9,6 +9,10 @@ enum class Direction {
     companion object {
         private val compass = values()
         private val size = compass.size
+
+        fun randomDirection(): Direction {
+            return compass.random()
+        }
     }
 
     fun inverse(): Direction {

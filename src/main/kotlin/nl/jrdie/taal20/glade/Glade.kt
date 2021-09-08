@@ -26,6 +26,18 @@ class Glade(val size: Int, val matrix: List<List<Tile>>) {
         throw RuntimeException("Cannot find of type ${T::class.java.name} in $matrix")
     }
 
+    inline fun <reified T : Tile> findTilesOfType(): List<Pair<T, Point>> {
+        val result = mutableListOf<Pair<T, Point>>()
+        for ((x, row) in matrix.withIndex()) {
+            for ((y, col) in row.withIndex()) {
+                if (col is T) {
+                    result.add(col to Point(x, y))
+                }
+            }
+        }
+        return result
+    }
+
     fun tileAt(point: Point): Tile {
         return matrix[point.x][point.y]
     }

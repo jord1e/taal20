@@ -16,15 +16,11 @@ object Program {
 gebruik kleurOog
 zolang 1 == 1 {
 stapVooruit
-stapVooruit
-stapVooruit
-stapVooruit
 als kleurOog == 5 {
 draaiRechts
 }
-als kleurOog == 1 {
+als kleurOog == 6 {
 draaiLinks
-stapVooruit
 }
 }
 """.trimStart()
@@ -32,15 +28,17 @@ stapVooruit
 
 fun main(args: Array<String>) {
     val gson = Gson()
-    val reader = File("zandbox_challenges2.json").reader()
+//    val reader = File("zandbox_challenges2.json").reader()
+    val reader = File("live_maze.json").reader()
     val challenges: List<ChallengePageScrapeResult> =
         gson.fromJson(reader, object : TypeToken<List<ChallengePageScrapeResult>>() {}.type)
 
-    val maze1 = challenges.first { it.challengeName == "zandbak_03" }
-
+//    val maze1 = challenges.first { it.challengeName == "zandbak_03" }
+    val maze1 = challenges.first { it.challengeName == "live_omgeving" }
+//
     val glade = GladeLoader.loadMaze(maze1.maze)
     println(glade)
-//    println(GladeLoader.printGlade(glade))
+    println(GladeLoader.printGlade(glade))
 
     val parser = Taal20Parser(Taal20Lexer(StringReader(Program.code)))
     val result = parser.parse().value as Programma
