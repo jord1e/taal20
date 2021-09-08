@@ -2,7 +2,7 @@ package nl.jrdie.taal20.glade
 
 import nl.jrdie.taal20.glade.models.Point
 
-class Glade(val size: Int, val matrix: List<List<Tile>>) {
+class Glade(val size: Int, val matrix: MutableList<MutableList<Tile>>) {
 
     fun findFirstTileLoc(tile: Tile): Point {
         for ((x, row) in matrix.withIndex()) {

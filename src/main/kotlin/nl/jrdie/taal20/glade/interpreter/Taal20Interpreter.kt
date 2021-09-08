@@ -11,7 +11,7 @@ import nl.jrdie.taal20.glade.models.Point
 import java.util.LinkedList
 
 class Taal20Interpreter(
-    val startGlade: Glade,
+    startGlade: Glade,
     val programma: Programma,
     val kostenkaart: Kostenkaart,
 ) {
@@ -31,6 +31,7 @@ class Taal20Interpreter(
     var doelen = mutableMapOf<Point, Boolean>()
     var second = 0
     var glade = startGlade
+    var bommen = mutableMapOf<Point, Pair<Int, ObstakelTile>>() // Seconde dat die boem gaat en in obstakel veranderd
 
     private fun cost(field: KostenkaartField, message: String) {
         val cost = kostenkaart[field]!!
@@ -43,32 +44,29 @@ class Taal20Interpreter(
     }
 
     // Return value is of game moet doorgaan
-    private fun nextSecond(): Boolean {
+    private fun check(): Boolean {
         if (finished || error) {
             return false;
         }
-        second++
         return true
+    }
+
+    private fun nextSecond() {
+        second++
     }
 
     @Throws(RuntimeException::class)
     private fun error(message: String) {
-        throw RuntimeException("\n" + messages.joinToString("\n") + "\n" +
-            "=== GLADE INTERPRETER EXCEPTION ===\n" +
+        throw RuntimeException(
+            "\n" + messages.joinToString("\n") + "\n" +
+                    "=== GLADE INTERPRETER EXCEPTION ===\n" +
                     "$message\n" +
                     "=== --------------------------- ==="
         )
         error = true;
     }
 
-    var stop = 0;
-
     private fun message(message: String) {
-        stop++
-        if (stop < 100) {
-
-            println(message)
-        }
         messages.add(message)
     }
 
@@ -112,7 +110,6 @@ class Taal20Interpreter(
         programmaBlok(programma.programmaBlok)
 
 
-
         val eindKapitaal = kostenkaart[START_KAPITAAL]!! - totalCost
         val last = messages.removeLast()
         messages.addLast("eind kapitaal :$eindKapitaal")
@@ -122,7 +119,7 @@ class Taal20Interpreter(
     }
 
     private fun programmaBlok(programmaBlok: ProgrammaBlok) {
-        if (!nextSecond()) {
+        if (!check()) {
             return
         }
         programmaBlok
@@ -131,7 +128,7 @@ class Taal20Interpreter(
     }
 
     private fun programmaStatement(stmt: ProgrammaStatement) {
-        if (!nextSecond()) {
+        if (!check()) {
             return
         }
         when (stmt) {
@@ -179,9 +176,9 @@ class Taal20Interpreter(
 //                        debug("doel behaald S${newTile.value} at ${newPoint.bracketNotation()}")
                         if (entry.key == newPoint) {
                             if (isReached) {
-                                if(doelen[newPoint] == false) {
+                                if (doelen[newPoint] == false) {
                                     doelen[newPoint] = true
-                                    message("doel [${newPoint.x}, ${newPoint.y}] bereikt")
+                                    message("doel [${newPoint.x}, ${newPoint.y}] bereikt.")
                                 }
                                 if (!doelen.values.contains(false)) {
                                     message("Doel bereikt binnen budget")
@@ -200,7 +197,12 @@ class Taal20Interpreter(
                 }
             }
             is BomTile -> {
-                return true to {}
+                return true to {
+                    if (!bommen.containsKey(newPoint)) {
+                        bommen[newPoint] = (second + newTile.value) to ObstakelTile(0)
+                        message("bom geactiveerd. Tijd = ${newTile.value} sec.")
+                    }
+                }
             }
             else -> {
                 return true to {}
@@ -210,9 +212,10 @@ class Taal20Interpreter(
 
     private fun opdrachtStatement(stmt: OpdrachtStatement) {
 //                message(direction.toString() + " " + position.bracketNotation())
-        if (!nextSecond()) {
+        if (!check()) {
             return
         }
+        nextSecond()
         when (stmt.type) {
             OpdrachtType.STAP_VOORUIT -> {
                 val newPoint = position.incInDirection(direction)
@@ -223,7 +226,7 @@ class Taal20Interpreter(
                 val handleNewPoint = handleNewPoint(newPoint)
                 if (handleNewPoint.first) {
                     position = newPoint
-                    cost(VERBRUIK_STAP_VOORUIT, "kosten voor stap vooruit: {cost} naar ${newPoint.bracketNotation()}")
+                    cost(VERBRUIK_STAP_VOORUIT, "kosten voor stap vooruit: {cost} naar: ${newPoint.bracketNotation()}")
                     handleNewPoint.second()
                 }
             }
@@ -238,7 +241,7 @@ class Taal20Interpreter(
                     position = newPoint
                     cost(
                         VERBRUIK_STAP_ACHTERUIT,
-                        "kosten voor stap achteruit: {cost} naar ${newPoint.bracketNotation()}"
+                        "kosten voor stap achteruit: {cost} naar: ${newPoint.bracketNotation()}"
                     )
                     handleNewPoint.second()
                 }
@@ -254,14 +257,29 @@ class Taal20Interpreter(
                 cost(VERBRUIK_DRAAI_RECHTS, "kosten voor het draaien naar rechts: {cost}")
             }
         }
+
+        if (bommen.isNotEmpty()) {
+            for (bom in bommen) {
+                if (second >= bom.value.first) {
+                    message("boem op :[${bom.key.x}, ${bom.key.y}]")
+                    if (position == bom.key) {
+                        // Speler dood
+                        totalCost = -234352 // TODO Uitrekenen
+                        message("Opgeblazen")
+                    }
+                    bommen.remove(bom.key)
+                    glade.matrix[bom.key.x][bom.key.y] = bom.value.second
+                }
+            }
+        }
     }
 
     private fun zolangStatement(stmt: ZolangStatement) {
-        if (!nextSecond()) {
+        if (!check()) {
             return
         }
         while (checkEquality(stmt.equalityExpression)) {
-            if (!nextSecond()) {
+            if (!check()) {
                 return
             }
             programmaBlok(stmt.code)
@@ -269,7 +287,7 @@ class Taal20Interpreter(
     }
 
     private fun alsStatement(stmt: AlsStatement) {
-        if (!nextSecond()) {
+        if (!check()) {
             return
         }
         if (checkEquality(stmt.equalityExpression)) {
@@ -278,7 +296,7 @@ class Taal20Interpreter(
     }
 
     private fun alsAndersStatement(stmt: AlsAndersStatement) {
-        if (!nextSecond()) {
+        if (!check()) {
             return
         }
         if (checkEquality(stmt.equalityExpression)) {
@@ -299,7 +317,7 @@ class Taal20Interpreter(
     }
 
     private fun checkEquality(expression: EqualityExpression): Boolean {
-        if (!nextSecond()) {
+        if (!check()) {
             return false
         }
         val left: Int = reduceExpressie(expression.left)
@@ -393,7 +411,7 @@ class Taal20Interpreter(
     }
 
     private fun gebruikStatement(stmt: GebruikStatement) {
-        if (!nextSecond()) {
+        if (!check()) {
             return
         }
         when (stmt.type) {

@@ -9,7 +9,9 @@ object GladeLoader {
         val size = sqrt(matrix.count { it == ';' } + 1.0).toInt()
         println(size)
         val codes = matrix.split(";")
-        val nested = (0..(size-1)).map { codes.subList(it * size, it * size + 20).map { code -> codeToTile(code) } }
+        val nested = (0..(size-1)).map { codes.subList(it * size, it * size + 20)
+            .map { code -> codeToTile(code)
+            }.toMutableList() }.toMutableList()
 //        matrix.split()
         return Glade(size, nested)
 //        return Glade(Array(size) { Array<Tile>(size) { ObstakelTile(1) } })
