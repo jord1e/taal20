@@ -14,6 +14,8 @@ class Taal20Interpreter(
     startGlade: Glade,
     val programma: Programma,
     val kostenkaart: Kostenkaart,
+    val messageCallback: ((String) -> Unit)? = null,
+    val callback: ((Taal20Interpreter) -> Unit)? = null,
 ) {
 
     val context = Taal20Context(
@@ -32,6 +34,7 @@ class Taal20Interpreter(
     var second = 0
     var glade = startGlade
     var bommen = mutableMapOf<Point, Pair<Int, ObstakelTile>>() // Seconde dat die boem gaat en in obstakel veranderd
+    var errorMessage: String? = null
 
     private fun cost(field: KostenkaartField, message: String) {
         val cost = kostenkaart[field]!!
@@ -51,23 +54,30 @@ class Taal20Interpreter(
         return true
     }
 
+    private fun runCallback() {
+        callback?.invoke(this)
+    }
+
     private fun nextSecond() {
         second++
     }
 
     @Throws(RuntimeException::class)
     private fun error(message: String) {
+        message(message)
+        error = true
+        errorMessage = message
         throw RuntimeException(
             "\n" + messages.joinToString("\n") + "\n" +
                     "=== GLADE INTERPRETER EXCEPTION ===\n" +
                     "$message\n" +
                     "=== --------------------------- ==="
         )
-        error = true;
     }
 
     private fun message(message: String) {
         messages.add(message)
+        messageCallback?.invoke(message)
     }
 
     private fun debug(message: String) {
@@ -89,7 +99,7 @@ class Taal20Interpreter(
             .sortedBy { it.first.value }
             .associate { it.second to false }
             .toMutableMap()
-        println(doelen)
+//        println(doelen)
 
         message("start kapitaal: " + kostenkaart[START_KAPITAAL])
         val astCost = CostAnalyzer().analyzeAst(programma)
@@ -109,13 +119,8 @@ class Taal20Interpreter(
 
         programmaBlok(programma.programmaBlok)
 
-
-        val eindKapitaal = kostenkaart[START_KAPITAAL]!! - totalCost
-        val last = messages.removeLast()
-        messages.addLast("eind kapitaal :$eindKapitaal")
-        messages.add(last)
-        messages
-            .forEach { println(it) }
+//        messages
+//            .forEach { println(it) }
     }
 
     private fun programmaBlok(programmaBlok: ProgrammaBlok) {
@@ -125,6 +130,7 @@ class Taal20Interpreter(
         programmaBlok
             .statements
             .forEach { programmaStatement(it) }
+        finish()
     }
 
     private fun programmaStatement(stmt: ProgrammaStatement) {
@@ -164,7 +170,7 @@ class Taal20Interpreter(
                     }
                     direction = newDirection
                     message("nieuwe richting na draaien = ${newDirection.ordinal}")
-                    debug("> gedraaid naar ${newDirection.name}")
+//                    debug("> gedraaid naar ${newDirection.name}")
                 }
             }
             is DoelTile -> {
@@ -172,7 +178,7 @@ class Taal20Interpreter(
 //                    doelen.cont { it.second == newPoint }
                     var isReached = true
                     for (entry in doelen) {
-                        debug("doel test: $entry")
+//                        debug("doel test: $entry")
 //                        debug("doel behaald S${newTile.value} at ${newPoint.bracketNotation()}")
                         if (entry.key == newPoint) {
                             if (isReached) {
@@ -181,8 +187,7 @@ class Taal20Interpreter(
                                     message("doel [${newPoint.x}, ${newPoint.y}] bereikt.")
                                 }
                                 if (!doelen.values.contains(false)) {
-                                    message("Doel bereikt binnen budget")
-                                    finished = true
+                                    finish()
                                 }
                                 break
                             }
@@ -208,6 +213,19 @@ class Taal20Interpreter(
                 return true to {}
             }
         }
+    }
+
+    private fun finish() {
+        if (finished) {
+            return
+        }
+        finished = true
+        val eindKapitaal = kostenkaart[START_KAPITAAL]!! - totalCost
+        message("eind kapitaal :$eindKapitaal")
+        if (eindKapitaal >= 0 && doelen.values.all { it }) {
+            message("Doel bereikt binnen budget")
+        }
+        runCallback()
     }
 
     private fun opdrachtStatement(stmt: OpdrachtStatement) {
@@ -272,6 +290,7 @@ class Taal20Interpreter(
                 }
             }
         }
+        runCallback()
     }
 
     private fun zolangStatement(stmt: ZolangStatement) {
@@ -340,7 +359,12 @@ class Taal20Interpreter(
                     error("Variable $name was not declared")
                     return -1;
                 } else {
-                    return variables[name]!!
+                    val variableValue = variables[name]
+                    if (variableValue == null) {
+                        error("> Variable $name was not initialized")
+                        return -1
+                    }
+                    return variableValue
                 }
             }
             is CalcExpressie -> {

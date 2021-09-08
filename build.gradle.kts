@@ -21,6 +21,9 @@ val cup: Configuration by configurations.creating
 dependencies {
     implementation("com.github.vbmacher:java-cup-runtime:11b-20160615")
     implementation("com.google.code.gson:gson:2.8.8")
+    implementation("com.fifesoft:rsyntaxtextarea:3.1.3")
+    implementation("com.fifesoft:autocomplete:3.1.2")
+    implementation("com.formdev:flatlaf:1.5")
     cup("com.github.vbmacher:java-cup:11b-20160615")
     testImplementation(kotlin("test"))
     implementation("org.jsoup:jsoup:1.14.2")

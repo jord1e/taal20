@@ -35,8 +35,8 @@ parser code {:
 //  }
 //:};
 
-terminal NEWLINE, SPACE, TAB;
 terminal RBRACE, LBRACE;
+terminal NEWLINE, SPACE, TAB;
 terminal EQEQ, NOTEQ;
 terminal LT, GT;
 terminal EQ;

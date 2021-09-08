@@ -17,20 +17,20 @@ public class Taal20SymbolType {
   public static final int PLUS = 12;
   public static final int NOTEQ = 8;
   public static final int INT = 21;
-  public static final int RBRACE = 5;
+  public static final int RBRACE = 2;
   public static final int DRAAI_RECHTS = 29;
-  public static final int TAB = 4;
+  public static final int TAB = 6;
   public static final int SLASH = 15;
   public static final int DRAAI_LINKS = 28;
   public static final int STAP_VOORUIT = 26;
   public static final int GT = 10;
-  public static final int LBRACE = 6;
+  public static final int LBRACE = 3;
   public static final int GEBRUIK = 20;
-  public static final int SPACE = 3;
+  public static final int SPACE = 5;
   public static final int ZWOOG = 23;
   public static final int EOF = 0;
   public static final int VARNAME = 25;
-  public static final int NEWLINE = 2;
+  public static final int NEWLINE = 4;
   public static final int error = 1;
   public static final int EQ = 11;
   public static final int MIN = 13;
@@ -41,11 +41,11 @@ public class Taal20SymbolType {
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
+  "RBRACE",
+  "LBRACE",
   "NEWLINE",
   "SPACE",
   "TAB",
-  "RBRACE",
-  "LBRACE",
   "EQEQ",
   "NOTEQ",
   "LT",
