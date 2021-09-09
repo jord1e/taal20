@@ -54,6 +54,10 @@ class Taal20Interpreter(
         return false
     }
 
+    fun stop(message: String) {
+        error("STOPPED MANUALLY: $message")
+    }
+
     private fun runCallback() {
         callback?.invoke(this)
     }

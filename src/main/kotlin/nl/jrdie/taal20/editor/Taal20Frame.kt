@@ -19,6 +19,7 @@ import org.fife.ui.rtextarea.RTextScrollPane
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.FlowLayout
+import java.awt.GridLayout
 import java.awt.event.KeyEvent
 import java.io.StringReader
 import java.time.LocalTime
@@ -36,6 +37,7 @@ class Taal20Frame : JFrame() {
     var currentLevel: ChallengePageScrapeResult? = null
     var currentGlade: Glade? = null
     var laravelCookie: String? = null
+    var currentInterpreter: Taal20Interpreter? = null;
 
     init {
         title = "Taal20 IDE"
@@ -104,10 +106,19 @@ class Taal20Frame : JFrame() {
                 )
                 return@addActionListener
             }
+            if (currentInterpreter?.finished == false) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Interpreter nog niet voltooid",
+                    "Foutmelding",
+                    JOptionPane.ERROR_MESSAGE
+                )
+                return@addActionListener
+            }
             messages.clear()
             console.text = ""
             Thread() {
-                Taal20Interpreter(currentGlade!!, astStructure, currentLevel!!.kostenkaart, {
+                currentInterpreter = Taal20Interpreter(currentGlade!!, astStructure, currentLevel!!.kostenkaart, {
                     messages.add(it)
                     console.text = messages.joinToString("\n")
                 }) {
@@ -115,7 +126,8 @@ class Taal20Frame : JFrame() {
                         renderInterpreterState(it)
                         Thread.sleep(250)
                     }
-                }.interpret()
+                }
+                currentInterpreter!!.interpret()
             }.start()
         }
 
@@ -267,6 +279,11 @@ class Taal20Frame : JFrame() {
             dialog.isVisible = true
         }
 
+        val stopButton = JButton("Stop")
+        stopButton.addActionListener {
+            currentInterpreter?.stop("Manual stop via button")
+        }
+
         val scrapeMenu = JMenu("Scraper")
         scrapeMenu.add(laravelCookieMenu)
         scrapeMenu.add(scrapeAssignments)
@@ -279,10 +296,11 @@ class Taal20Frame : JFrame() {
         menuBar.add(scrapeMenu)
         jMenuBar = menuBar
 
-        val buttonPanel = JPanel(FlowLayout())
+        val buttonPanel = JPanel(GridLayout(3, 2))
         buttonPanel.add(verifyButton)
         buttonPanel.add(runButton)
         buttonPanel.add(kostenKaartBtn)
+        buttonPanel.add(stopButton)
         codePanel.add(statusLabel, BorderLayout.NORTH)
         codePanel.add(RTextScrollPane(codeEditorArea), BorderLayout.CENTER)
         codePanel.add(buttonPanel, BorderLayout.SOUTH)
