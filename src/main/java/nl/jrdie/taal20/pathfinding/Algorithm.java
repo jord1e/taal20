@@ -7,6 +7,7 @@ import java.util.List;
 public class Algorithm {
     static String[][] grid;
 
+    static int lastDir = -1;
     static Vector2 startPos;
     static Vector2 destination;
     static Vector2 currentPos;
@@ -96,7 +97,29 @@ public class Algorithm {
         return -1;
     }
 
-    public static String FindPath(int size, String maze) {
+    public static int KompasSom(int a, int b){
+        if(a == 0 && b == 3) return -1;
+        else if(a == 0 && b == 1) return 1;
+        else if(a == 1 && b == 0) return -1;
+        else if(a == 1 && b == 2) return 1;
+        else if(a == 2 && b == 1) return -1;
+        else if(a == 2 && b == 3) return 1;
+        else if(a == 3 && b == 2) return -1;
+        else if(a == 3 && b == 0) return 1;
+        return 0;
+    }
+
+    public static String GetLine(int currentDir, int newDir){
+        if(KompasSom(currentDir, newDir) == 1)
+            return lines[2];
+        else if(KompasSom(currentDir, newDir) == -1)
+            return lines[1];
+        return "";
+    }
+
+    public static String FindAllPaths(int size, String maze) {
+        String output = "";
+
         String[] maze_ = maze.split(";");
         grid = new String[size][size];
         for (int i = 0; i < size; i++) {
@@ -106,22 +129,47 @@ public class Algorithm {
         }
 
         int startingdirection = Integer.parseInt(maze.split("S")[1].charAt(0) + "");
+
         int koe = Arrays.asList(maze_).indexOf("S" + startingdirection);
         startPos = new Vector2(koe % size, (int) Math.floor((float) koe / (float) size));
         System.out.println("StartPos: " + startPos);
+
         String[] goals_ = maze.split("D");
         String[] goals = new String[goals_.length - 1];
         for (int i = 0; i < goals_.length - 1; i++) {
             goals[i] = "D" + goals_[1 + i].charAt(0);
         }
+        Arrays.sort(goals);
         Vector2[] destinations = new Vector2[goals.length];
         for (int i = 0; i < goals.length; i++) {
             int kip = Arrays.asList(maze_).indexOf(goals[i]);
             destinations[i] = new Vector2(kip % size, (int) Math.floor((float) kip / (float) size));
         }
-        //destination = destinations[0];
-        destination = new Vector2(5,2);
-        System.out.println("Destination: " + destination + "; " + goals[0]);
+
+        startingdirection = (startingdirection + 2)%4;
+
+        for (int i = destinations.length-1; i < destinations.length; i++) {
+            /*if (i > 0) {
+                startPos = destinations[i-1];
+                if (lastDir == -1) {
+                    startingdirection = Integer.parseInt(maze.split("S")[1].charAt(0) + "");
+                } else {
+                    startingdirection = lastDir;
+                }
+            }*/
+
+            destination = destinations[3];
+
+            System.out.println(startingdirection+" yo "+startPos+" yooo "+destination);
+            System.out.println(FindPath(grid, startingdirection));
+        }
+
+        return output;
+    }
+
+
+    public static String FindPath(String[][] grid, int startingDirection) {
+        int size = grid[0].length;
 
         List<String> path = new ArrayList<>();
 
@@ -151,6 +199,7 @@ public class Algorithm {
         }
         currentPos = destination;
         int direction = -1;
+        List<Vector2> pad = new ArrayList<>();
         aantal = 0;
         while (aantal < 1000) {
             List<Vector2> tiles = new ArrayList<>();
@@ -166,7 +215,8 @@ public class Algorithm {
 
                 waardes.add(g == 0 ? Float.MAX_VALUE : g);
             }
-
+            pad.add(new Vector2(tiles.get(GetLowestIndex(waardes)).x, tiles.get(GetLowestIndex(waardes)).y));
+            //System.out.println(tiles.get(GetLowestIndex(waardes)));
             int richting = GetLowestIndex(waardes);
             if (direction == -1) direction = richting;
             if (grid[(int) currentPos.x][(int) currentPos.y].contains("R")) {
@@ -183,67 +233,39 @@ public class Algorithm {
                         break;
                 }
             }
-            direction %= 4;
-            if (Math.abs(direction - richting) == 2) {
-                path.add(lines[2]);
-                path.add(lines[2]);
-            } else if (direction == 0) {
-                if (richting == 1) {
-                    path.add(lines[2]);
-                } else if (richting == 3) {
-                    path.add(lines[1]);
-                }
-                direction = richting;
-            } else if (direction == 1 || direction == 2) {
-                if (richting > direction) {
-                    direction++;
-                    path.add(lines[2]);
-                } else if (richting < direction) {
-                    direction--;
-                    path.add(lines[1]);
-                }
-            } else if (direction == 3) {
-                if (richting == 0) {
-                    direction = 0;
-                    path.add(lines[2]);
-                } else if (richting == 2) {
-                    direction = 2;
-                    path.add(lines[1]);
-                }
-            }
-            path.add(lines[0]);
             currentPos = new Vector2((int) tiles.get(GetLowestIndex(waardes)).x, (int) tiles.get(GetLowestIndex(waardes)).y);
-            System.out.println(currentPos);
             aantal++;
         }
-        path.add(lines[0]);
-        int richting = startingdirection;
-        if (Math.abs(direction - richting) == 2 && direction != -1) {
-            path.add(lines[2]);
-            path.add(lines[2]);
-        } else if (direction == 0) {
-            if (richting == 1) {
-                path.add(lines[2]);
-            } else if (richting == 3) {
+        int directie = startingDirection;
+        boolean hasturned = false;
+        for (int i = pad.size()-1; i > 0; i--) {
+            int dir = getDirection(pad.get(i - 1).substract(pad.get(i)));
+            if (Math.abs(directie - dir) == 2) {
                 path.add(lines[1]);
-            }
-        } else if (direction == 1 || direction == 2) {
-            if (richting > direction) {
-                path.add(lines[2]);
-            } else if (richting < direction) {
                 path.add(lines[1]);
+                path.add(lines[0]);
+            } else if(directie != dir) {
+                path.add(GetLine(dir, directie));
+                if (!hasturned) {
+                    path.add(lines[0]);
+                    hasturned = true;
+                }
             }
-        } else if (direction == 3) {
-            if (richting == 0) {
-                path.add(lines[2]);
-            } else if (richting == 2) {
-                path.add(lines[1]);
-            }
+
+            path.add(lines[0]);
+            directie = dir;
         }
+
+        path.add(lines[0]);
+        lastDir = directie;
+
+        //System.out.println(direction);
+
         String output = "";
-        for (int i = path.size() - 1; i >= 0; i--) {
+        for (int i = 0; i < path.size(); i++) {
             output += path.get(i) + "\n";
         }
+
 
         return output;
     }
