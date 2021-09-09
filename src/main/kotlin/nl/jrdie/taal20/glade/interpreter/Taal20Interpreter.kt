@@ -47,7 +47,7 @@ class Taal20Interpreter(
     }
 
     // Return false = game moet doorgaan
-    private fun isFinished(): Boolean {
+    fun isFinished(): Boolean {
         if (finished || error) {
             return true
         }

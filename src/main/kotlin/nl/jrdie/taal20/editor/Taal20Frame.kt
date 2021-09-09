@@ -106,7 +106,7 @@ class Taal20Frame : JFrame() {
                 )
                 return@addActionListener
             }
-            if (currentInterpreter?.finished == false) {
+            if (currentInterpreter?.isFinished() == false) {
                 JOptionPane.showMessageDialog(
                     this,
                     "Interpreter nog niet voltooid",
