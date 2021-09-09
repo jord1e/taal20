@@ -12,6 +12,10 @@ public class Vector2
         this.y = 0.0f;
     }
 
+    public Vector2 substract(Vector2 vec){
+        return new Vector2(x - vec.x, y - vec.y);
+    }
+
     public Vector2(float x, float y) {
         this.x = x;
         this.y = y;
