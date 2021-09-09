@@ -19,8 +19,8 @@ enum class Direction {
         return when (this) {
             NOORD -> ZUID
             OOST -> WEST
-            ZUID -> OOST
-            WEST -> NOORD
+            ZUID -> NOORD
+            WEST -> OOST
         }
     }
 
