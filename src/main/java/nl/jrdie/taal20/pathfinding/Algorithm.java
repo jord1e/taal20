@@ -21,7 +21,7 @@ public class Algorithm {
 
     static int GetF(Vector2 pos, int g) {
         if (grid[(int) pos.x][(int) pos.y].contains("O"))
-            return Integer.MAX_VALUE;
+           return Integer.MAX_VALUE;
         return g + GetH(pos);
     }
 
@@ -45,6 +45,8 @@ public class Algorithm {
             if (nodes.get(i).fCost < f && !nodes.get(i).scanned) {
                 f = nodes.get(i).fCost;
                 index = i;
+            } else if (nodes.get(i).fCost == f && !nodes.get(i).scanned) {
+                index = -1;
             }
         }
         return index;
@@ -57,16 +59,6 @@ public class Algorithm {
             if (nodes.get(i).hCost < h && !nodes.get(i).scanned) {
                 h = nodes.get(i).hCost;
                 index = i;
-            }
-            //System.out.println(nodes.get(i).hCost+" yo "+nodes.get(i).scanned);
-        }
-        if (index == -1) {
-            for (int i = 0; i < nodes.size(); i++) {
-                if (nodes.get(i).hCost < h) {
-                    h = nodes.get(i).hCost;
-                    index = i;
-                }
-                //System.out.println(nodes.get(i).hCost+" yo "+nodes.get(i).scanned);
             }
         }
         return index;
@@ -92,13 +84,14 @@ public class Algorithm {
 
     public static String FindPath(int size, String maze) {
         String[] maze_ = maze.split(";");
-        System.out.println("Vakjes: " + maze_.length);
         grid = new String[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 grid[i][j] = maze_[i * size + j];
             }
         }
+        //startPos = new Vector2(5, 13);
+        //destination = new Vector2(18, 10);
 
         int startingdirection = Integer.parseInt(maze.split("S")[1].charAt(0) + "");
         int koe = Arrays.asList(maze_).indexOf("S" + startingdirection);
@@ -114,8 +107,9 @@ public class Algorithm {
             int kip = Arrays.asList(maze_).indexOf(goals[i]);
             destinations[i] = new Vector2(kip % size, (int) Math.floor((float) kip / (float) size));
         }
-        destination = destinations[2];
-        System.out.println("Destination: "+destination+"; "+goals[2]);
+        destination = destinations[0];
+        System.out.println("Destination: " + destination + "; " + goals[0]);
+
         List<String> path = new ArrayList<>();
 
         int aantal = 0;
@@ -149,6 +143,7 @@ public class Algorithm {
         while (aantal < 1000) {
             List<Vector2> tiles = new ArrayList<>();
             List<Float> waardes = new ArrayList<>();
+            if (GetG(nodes, (int)currentPos.x, (int)currentPos.y) == 1) break;
             for (int i = 0; i < checks.length; i++) {
                 int a = (int) (currentPos.x - checks[i].x);
                 int b = (int) (currentPos.y - checks[i].y);
@@ -156,20 +151,8 @@ public class Algorithm {
                     continue;
                 tiles.add(new Vector2(a, b));
                 int g = GetG(nodes, a, b);
+
                 waardes.add(g == 0 ? Float.MAX_VALUE : g);
-                /*if (direction == -1) direction = i;
-                if (i < direction) {
-                    if (direction == 3 && i == 0)
-                        path.add(lines[1]);
-                    else
-                        path.add(lines[2]);
-                } else if (i > direction) {
-                    if (direction == 0 && i == 3)
-                        path.add(lines[2]);
-                    else
-                        path.add(lines[1]);
-                }
-                path.add(lines[0]);*/
             }
 
             int richting = GetLowestIndex(waardes);
@@ -201,22 +184,32 @@ public class Algorithm {
             path.add(lines[0]);
             currentPos = new Vector2((int) tiles.get(GetLowestIndex(waardes)).x, (int) tiles.get(GetLowestIndex(waardes)).y);
             System.out.println(currentPos);
-            if (waardes.get(GetLowestIndex(waardes)) == 1) break;
             aantal++;
         }
-        /*
-        if (startingdirection < direction) {
-            if (direction == 3 && startingdirection == 0)
-                path.add(lines[1]);
-            else
+        path.add(lines[0]);
+        int richting = startingdirection;
+        if(Math.abs(direction - richting) == 2 && direction != -1){
+            path.add(lines[2]);
+            path.add(lines[2]);
+        }else if (direction == 0) {
+            if (richting == 1) {
                 path.add(lines[2]);
-        } else if (startingdirection > direction) {
-            if (direction == 0 && startingdirection == 3)
-                path.add(lines[2]);
-            else
+            } else if (richting == 3) {
                 path.add(lines[1]);
+            }
+        } else if (direction == 1 || direction == 2) {
+            if (richting > direction) {
+                path.add(lines[2]);
+            } else if (richting < direction) {
+                path.add(lines[1]);
+            }
+        } else if (direction == 3) {
+            if (richting == 0) {
+                path.add(lines[2]);
+            } else if (richting == 2) {
+                path.add(lines[1]);
+            }
         }
-        */
         String output = "";
         for (int i = path.size() - 1; i >= 0; i--) {
             output += path.get(i) + "\n";
