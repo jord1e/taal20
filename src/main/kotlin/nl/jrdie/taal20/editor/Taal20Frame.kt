@@ -269,7 +269,7 @@ class Taal20Frame : JFrame() {
                 JOptionPane.showMessageDialog(this, "Geen level geselecteerd", "Foutmelding", JOptionPane.ERROR_MESSAGE)
                 return@addActionListener
             }
-            val dialog = JDialog(this, "Kostenkaart (${currentLevel!!.challengeName})", true)
+            val dialog = JDialog(this, "Kostenkaart (${currentLevel!!.challengeName})", false)
             dialog.add(KostenkaartPanel(currentLevel!!.kostenkaart))
             dialog.apply {
                 size = Dimension(625, 450)

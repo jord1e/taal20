@@ -7,6 +7,7 @@ plugins {
     id("com.github.andrescv.jcup") version "1.0" // https://github.com/andrescv/jcup-gradle-plugin
 //    id("org.jetbrains.grammarkit") version "2021.1.3" // https://github.com/JetBrains/gradle-grammar-kit-plugin
 //    id("org.xbib.gradle.plugin.jflex") version "1.4.0"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 group = "nl.jrdie.taal20"
@@ -35,7 +36,7 @@ tasks {
     }
 
     withType<KotlinCompile>() {
-        kotlinOptions.jvmTarget = "13"
+        kotlinOptions.jvmTarget = "1.8"
     }
 
     jcup {
@@ -60,7 +61,7 @@ tasks {
 
 
 application {
-    mainClass.set("nl.jrdie.taal20.MainKt")
+    mainClass.set("nl.jrdie.taal20.editor.Taal20VisualEditorKt")
 }
 
 distributions {
@@ -75,7 +76,7 @@ distributions {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(13))
+        languageVersion.set(JavaLanguageVersion.of(8))
     }
     sourceSets {
         main {
