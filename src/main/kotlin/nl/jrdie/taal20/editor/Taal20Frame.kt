@@ -115,6 +115,7 @@ class Taal20Frame : JFrame() {
                 )
                 return@addActionListener
             }
+            currentGlade = GladeLoader.loadMaze(currentLevel!!.maze)
             messages.clear()
             console.text = ""
             Thread() {
