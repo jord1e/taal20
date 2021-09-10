@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import nl.jrdie.taal20._parser.Taal20Parser
 import nl.jrdie.taal20.ast.Programma
-import nl.jrdie.taal20.autosolver.Generator
+import nl.jrdie.taal20.autosolver.Taal20Solver
 import nl.jrdie.taal20.data.KostenkaartField
 import nl.jrdie.taal20.glade.Glade
 import nl.jrdie.taal20.glade.import.GladeLoader
@@ -307,7 +307,7 @@ class Taal20Frame : JFrame() {
                 )
                 return@addActionListener
             }
-            val code = Generator.generate(currentGlade!!, currentLevel!!.kostenkaart)
+            val code = Taal20Solver.generate(currentGlade!!, currentLevel!!.kostenkaart)
             if (code.isBlank()) {
                 if (currentLevel == null || currentGlade == null) {
                     JOptionPane.showMessageDialog(

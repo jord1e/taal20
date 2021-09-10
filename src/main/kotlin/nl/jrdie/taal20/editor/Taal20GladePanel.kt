@@ -98,9 +98,9 @@ class Taal20GladePanel : JPanel(GridLayout(20, 20, 1, 1)) {
         }
         val imageIcon = ImageIcon(image)
         return when (tile) {
-//            is DoelTile -> JLabel("D" + tile.value)
-//            is DraaiTile -> JLabel("R" + tile.value)
-//            is BonusTile -> JLabel("E" + tile.value)
+            is DoelTile -> JLabel("D" + tile.value)
+            is DraaiTile -> JLabel("R" + tile.value)
+            is BonusTile -> JLabel("E" + tile.value)
             else -> JLabel(imageIcon)
         }
     }

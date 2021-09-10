@@ -42,7 +42,7 @@ class Glade(val size: Int, val matrix: MutableList<MutableList<Tile>>) {
         return matrix[point.x][point.y]
     }
 
-    fun tileAtR(point: Point): Tile {
+    fun tileAtRv(point: Point): Tile {
         return matrix[point.y][point.x]
     }
 
