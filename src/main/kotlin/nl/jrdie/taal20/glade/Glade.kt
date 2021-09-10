@@ -42,8 +42,20 @@ class Glade(val size: Int, val matrix: MutableList<MutableList<Tile>>) {
         return matrix[point.x][point.y]
     }
 
+    fun tileAtR(point: Point): Tile {
+        return matrix[point.y][point.x]
+    }
+
     override fun toString(): String {
 //        return "Glade(matrix=${Arrays.deepToString(matrix)})"
         return "Glade(matrix=${matrix})"
     }
+
+    fun getHighestGoal(): DoelTile {
+        return matrix
+            .flatten()
+            .filterIsInstance<DoelTile>()
+            .maxByOrNull { it.value }!! // Minimaal 1 doel tile
+    }
+
 }

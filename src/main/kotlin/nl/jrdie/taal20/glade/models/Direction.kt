@@ -13,6 +13,14 @@ enum class Direction {
         fun randomDirection(): Direction {
             return compass.random()
         }
+
+        fun ofOrdinal(ordinal: Int): Direction {
+            return compass[ordinal % size]
+        }
+
+        fun allDirections(): List<Direction> {
+            return listOf(*compass)
+        }
     }
 
     fun inverse(): Direction {
@@ -31,7 +39,11 @@ enum class Direction {
 
     fun right(steps: Int = 1): Direction {
         check(steps > 0)
-        check(size == 4) // TODO REMOVE
         return compass[(size + ordinal + steps) % size]
     }
+
+    fun stepsTo(to: Direction): Int {
+        return this.ordinal - to.ordinal
+    }
+
 }

@@ -12,10 +12,10 @@ object KleurOogExpressie : Expressie
 object ZwOogExpressie : Expressie
 object KompasExpressie : Expressie
 
-enum class CalcExpressieType {
-    PLUS,
-    MIN,
-    TIMES,
-    SLASH,
-    PERCENT
+enum class CalcExpressieType(val op: String) {
+    PLUS("+"),
+    MIN("-"),
+    TIMES("*"),
+    SLASH("/"),
+    PERCENT("%")
 }

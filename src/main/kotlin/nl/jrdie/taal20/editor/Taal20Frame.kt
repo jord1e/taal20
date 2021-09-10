@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import nl.jrdie.taal20._parser.Taal20Parser
 import nl.jrdie.taal20.ast.Programma
+import nl.jrdie.taal20.autosolver.Generator
 import nl.jrdie.taal20.data.KostenkaartField
 import nl.jrdie.taal20.glade.Glade
 import nl.jrdie.taal20.glade.import.GladeLoader
@@ -25,6 +26,7 @@ import java.io.StringReader
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.atomic.AtomicLong
 import javax.swing.*
 import javax.swing.text.DefaultCaret
 
@@ -37,7 +39,8 @@ class Taal20Frame : JFrame() {
     var currentLevel: ChallengePageScrapeResult? = null
     var currentGlade: Glade? = null
     var laravelCookie: String? = null
-    var currentInterpreter: Taal20Interpreter? = null;
+    var currentInterpreter: Taal20Interpreter? = null
+    var speedMs: AtomicLong = AtomicLong(0)
 
     init {
         title = "Taal20 IDE"
@@ -91,9 +94,14 @@ class Taal20Frame : JFrame() {
                 astStructure = parser.parse().value as Programma
             } catch (e: Exception) {
                 statusLabel.text =
-                LocalTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCAL_TIME) + " " + e.message
+                    LocalTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCAL_TIME) + " " + e.message
                 e.printStackTrace()
-                JOptionPane.showMessageDialog(this, "Compilatiefout: ${e.message}", "Foutmelding", JOptionPane.ERROR_MESSAGE)
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Compilatiefout: ${e.message}",
+                    "Foutmelding",
+                    JOptionPane.ERROR_MESSAGE
+                )
 
                 return@addActionListener
             }
@@ -125,7 +133,10 @@ class Taal20Frame : JFrame() {
                 }) {
                     SwingUtilities.invokeAndWait {
                         renderInterpreterState(it)
-                        Thread.sleep(250)
+                        val speed = speedMs.get()
+                        if (speed > 0) {
+                            Thread.sleep(speed)
+                        }
                     }
                 }
                 currentInterpreter!!.interpret()
@@ -145,7 +156,12 @@ class Taal20Frame : JFrame() {
                 statusLabel.text =
                     LocalTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCAL_TIME) + " " + e.message
                 e.printStackTrace()
-                JOptionPane.showMessageDialog(this, "Compilatiefout: ${e.message}", "Foutmelding", JOptionPane.ERROR_MESSAGE)
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Compilatiefout: ${e.message}",
+                    "Foutmelding",
+                    JOptionPane.ERROR_MESSAGE
+                )
             }
         }
 
@@ -161,7 +177,7 @@ class Taal20Frame : JFrame() {
                     object : TypeToken<List<ChallengePageScrapeResult>>() {}.type
                 )
                 levels = (levels.filter { level -> !data.any { it.challengeName == level.challengeName } } + data)
-                    .distinctBy { it.challengeName }
+                    .distinctBy { it.challengeName }.sortedBy { it.challengeName }
                 levelMenu.text = "Levels (${levels.size})"
             }
         }
@@ -280,9 +296,53 @@ class Taal20Frame : JFrame() {
             dialog.isVisible = true
         }
 
+        val dijkstraJGraphTBtn = JButton("Dijkstra JGraphT")
+        dijkstraJGraphTBtn.addActionListener {
+            if (currentLevel == null || currentGlade == null) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Geen level (en/of glade) geselecteerd",
+                    "Foutmelding",
+                    JOptionPane.ERROR_MESSAGE
+                )
+                return@addActionListener
+            }
+            val code = Generator.generate(currentGlade!!, currentLevel!!.kostenkaart)
+            if (code.isBlank()) {
+                if (currentLevel == null || currentGlade == null) {
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "Er ging iets fout tijdens het toepassen van\nhet Dijkstra algoritme",
+                        "Foutmelding",
+                        JOptionPane.ERROR_MESSAGE
+                    )
+                    return@addActionListener
+                }
+            }
+            codeEditorArea.text = code
+        }
+
+        val rubenEnDanielGen = JButton("MatrixGen R/D")
+
         val stopButton = JButton("Stop")
         stopButton.addActionListener {
             currentInterpreter?.stop("Manual stop via button")
+        }
+
+        val speedInput = JSpinner(SpinnerNumberModel(1000, 0, 10000, 1))
+        val speedButton = JButton("Edit Speed (ms/stap)")
+        speedButton.addActionListener {
+            val speedMsInput = speedInput.value.toString().toInt().toLong()
+            if (speedMsInput < 0) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Snelheid moet 0 of meer milliseconden/stap zijn",
+                    "Foutmelding",
+                    JOptionPane.ERROR_MESSAGE
+                )
+                return@addActionListener
+            }
+            speedMs.set(speedMsInput)
         }
 
         val scrapeMenu = JMenu("Scraper")
@@ -297,11 +357,15 @@ class Taal20Frame : JFrame() {
         menuBar.add(scrapeMenu)
         jMenuBar = menuBar
 
-        val buttonPanel = JPanel(GridLayout(3, 2))
+        val buttonPanel = JPanel(GridLayout(4, 2))
         buttonPanel.add(verifyButton)
         buttonPanel.add(runButton)
         buttonPanel.add(kostenKaartBtn)
         buttonPanel.add(stopButton)
+        buttonPanel.add(speedInput)
+        buttonPanel.add(speedButton)
+        buttonPanel.add(dijkstraJGraphTBtn)
+        buttonPanel.add(rubenEnDanielGen)
         codePanel.add(statusLabel, BorderLayout.NORTH)
         codePanel.add(RTextScrollPane(codeEditorArea), BorderLayout.CENTER)
         codePanel.add(buttonPanel, BorderLayout.SOUTH)

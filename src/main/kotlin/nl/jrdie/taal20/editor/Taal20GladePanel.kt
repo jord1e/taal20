@@ -3,14 +3,12 @@ package nl.jrdie.taal20.editor
 import nl.jrdie.taal20.glade.*
 import nl.jrdie.taal20.glade.interpreter.Taal20Interpreter
 import nl.jrdie.taal20.glade.models.Point
-import java.awt.Color
 import java.awt.Dimension
 import java.awt.GridLayout
 import java.awt.image.BufferedImage
 import java.io.IOException
 import java.io.UncheckedIOException
 import javax.imageio.ImageIO
-import javax.swing.BorderFactory
 import javax.swing.ImageIcon
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -52,7 +50,7 @@ class Taal20GladePanel : JPanel(GridLayout(20, 20, 1, 1)) {
                 var label = renderTileLabel(col)
                 if (point == interpreter.position) {
                     label = JLabel(ImageIcon(loadImage("start.png")))
-                    label.border = BorderFactory.createLineBorder(Color.RED, 2)
+//                    label.border = BorderFactory.createLineBorder(Color.RED, 2)
                 } else if (currentTile is StartTile) {
                     label = JLabel(ImageIcon(loadImage("black.png")))
                 } else if (currentTile is BonusTile) {
@@ -100,8 +98,9 @@ class Taal20GladePanel : JPanel(GridLayout(20, 20, 1, 1)) {
         }
         val imageIcon = ImageIcon(image)
         return when (tile) {
-            is DoelTile -> JLabel("D" + tile.value)
-            is DraaiTile -> JLabel("R" + tile.value)
+//            is DoelTile -> JLabel("D" + tile.value)
+//            is DraaiTile -> JLabel("R" + tile.value)
+//            is BonusTile -> JLabel("E" + tile.value)
             else -> JLabel(imageIcon)
         }
     }

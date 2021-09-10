@@ -9,6 +9,8 @@ import nl.jrdie.taal20.glade.*
 import nl.jrdie.taal20.glade.models.Direction
 import nl.jrdie.taal20.glade.models.Point
 import java.util.LinkedList
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentSkipListSet
 
 class Taal20Interpreter(
     startGlade: Glade,
@@ -29,11 +31,12 @@ class Taal20Interpreter(
     var direction: Direction = Direction.NOORD // TODO bepalen
     var error = false
     var finished = false;
-    var bonusTilesVisited = mutableSetOf<Point>()
-    var doelen = mutableMapOf<Point, Boolean>()
+    var bonusTilesVisited: MutableSet<Point> = ConcurrentSkipListSet<Point>()
+    var doelen: MutableMap<Point, Boolean> = ConcurrentHashMap<Point, Boolean>()
     var second = 0
     var glade = startGlade
-    var bommen = mutableMapOf<Point, Pair<Int, ObstakelTile>>() // Seconde dat die boem gaat en in obstakel veranderd
+    var bommen: MutableMap<Point, Pair<Int, ObstakelTile>> =
+        ConcurrentHashMap<Point, Pair<Int, ObstakelTile>>() // Seconde dat die boem gaat en in obstakel veranderd
     var errorMessage: String? = null
 
     private fun cost(field: KostenkaartField, message: String) {
@@ -265,14 +268,22 @@ class Taal20Interpreter(
                 }
             }
             OpdrachtType.DRAAI_LINKS -> {
-                direction = direction.left()
-                debug("> gedraaid naar ${direction.name} (links)")
-                cost(VERBRUIK_DRAAI_LINKS, "kosten voor het draaien naar links: {cost}")
+                val handleNewPoint = handleNewPoint(position)
+                if (handleNewPoint.first) {
+                    direction = direction.left()
+                    debug("> gedraaid naar ${direction.name} (links)")
+                    cost(VERBRUIK_DRAAI_LINKS, "kosten voor het draaien naar links: {cost}")
+                    handleNewPoint.second()
+                }
             }
             OpdrachtType.DRAAI_RECHTS -> {
-                direction = direction.right()
-                debug("> gedraaid naar ${direction.name} (rechts)")
-                cost(VERBRUIK_DRAAI_RECHTS, "kosten voor het draaien naar rechts: {cost}")
+                val handleNewPoint = handleNewPoint(position)
+                if (handleNewPoint.first) {
+                    direction = direction.right()
+                    debug("> gedraaid naar ${direction.name} (rechts)")
+                    cost(VERBRUIK_DRAAI_RECHTS, "kosten voor het draaien naar rechts: {cost}")
+                    handleNewPoint.second()
+                }
             }
         }
 
@@ -331,6 +342,7 @@ class Taal20Interpreter(
             error("Variable not defined: $variable")
         } else {
             val reduced = reduceExpressie(stmt.expressie)
+            cost(VERBRUIK_TOEWIJZING_A_IS_1, "kosten voor het toewijzen van een waarde: $reduced aan $variable: {cost}")
             variables[variable] = reduced
         }
     }
@@ -368,6 +380,8 @@ class Taal20Interpreter(
                 }
             }
             is CalcExpressie -> {
+                // TODO in het echt "kosten voor de operatie: {cost}"
+                cost(VERBRUIK_OPERATIE, "kosten voor de ${expressie.operation.op} operatie: {cost}")
                 val operation: (Int, Int) -> Int = when (expressie.operation) {
                     CalcExpressieType.PLUS -> Int::plus
                     CalcExpressieType.MIN -> Int::minus
